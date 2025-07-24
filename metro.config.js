@@ -7,11 +7,14 @@ const config = getDefaultConfig(__dirname);
 // Add polyfill resolvers
 config.resolver.extraNodeModules.crypto = require.resolve('expo-crypto');
 
-// Fix module resolution for newer SDK versions
-config.resolver.unstable_enablePackageExports = true;
+// Fix module resolution for newer SDK versions - disable to fix import.meta error with Zustand
+config.resolver.unstable_enablePackageExports = false;
 
 // Add resolverMainFields for better compatibility
 config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
+
+config.resolver.sourceExts = [...(config.resolver.sourceExts || []), 'web.js', 'web.ts', 'web.tsx'];
+config.resolver.platforms = ['ios', 'android', 'native', 'web'];
 
 // Handle problematic packages
 config.resolver.platforms = ['ios', 'android', 'native', 'web'];

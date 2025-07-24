@@ -4,7 +4,7 @@ import { MapView, MapViewRef } from './MapView';
 import { SearchBar } from './SearchBar';
 
 export const MapContainer: React.FC = () => {
-  const mapRef = useRef<MapViewRef>(null);
+  const mapRef = useRef<MapViewRef | null>(null);
 
   return (
     <View style={styles.container}>

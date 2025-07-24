@@ -5,6 +5,8 @@ import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAuthorization } from '../../../utils/useAuthorization';
 import { SignInFeature } from '../../../components/sign-in/sign-in-feature';
 import { AccountDetailFeature } from '../../../components/account/account-detail-feature';
+import { cyberpunkEffects } from '../../../theme/cyberpunkEffects';
+import { CyberpunkColors } from '../../../theme/cyberpunkTheme';
 
 export const WalletStatus: React.FC = () => {
   const theme = useTheme();
@@ -13,7 +15,7 @@ export const WalletStatus: React.FC = () => {
   if (selectedAccount) {
     return (
       <View style={styles.container}>
-        <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onSurface }]}>
+        <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow(), { color: theme.colors.onSurface }]}>
           연결된 지갑
         </Text>
         <AccountDetailFeature />
@@ -23,17 +25,17 @@ export const WalletStatus: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onSurface }]}>
+      <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow(), { color: theme.colors.onSurface }]}>
         지갑 연결
       </Text>
       
-      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
+      <Card style={[styles.card, cyberpunkEffects.holographicCard()]}>
         <Card.Content style={styles.content}>
-          <View style={styles.iconContainer}>
+          <View style={[styles.iconContainer, cyberpunkEffects.neonGlow(CyberpunkColors.neonBlue)]}>
             <MaterialCommunityIcon
               name="wallet-outline"
               size={32}
-              color={theme.colors.primary}
+              color={CyberpunkColors.neonBlue}
             />
           </View>
           

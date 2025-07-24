@@ -7,7 +7,7 @@ import { Place } from '../types';
 import { MapViewRef } from './MapView';
 
 interface SearchBarProps {
-  mapRef: React.RefObject<MapViewRef>;
+  mapRef: React.RefObject<MapViewRef | null>;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ mapRef }) => {

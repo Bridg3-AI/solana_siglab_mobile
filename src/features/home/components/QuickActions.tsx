@@ -4,6 +4,8 @@ import { Card, Text, useTheme } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import { cyberpunkEffects } from '../../../theme/cyberpunkEffects';
+import { CyberpunkColors } from '../../../theme/cyberpunkTheme';
 
 const { width } = Dimensions.get('window');
 
@@ -51,7 +53,7 @@ export const QuickActions: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onSurface }]}>
+      <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow(), { color: theme.colors.onSurface }]}>
         빠른 실행
       </Text>
       
@@ -62,9 +64,9 @@ export const QuickActions: React.FC = () => {
             onPress={() => handleActionPress(action)}
             style={styles.actionButton}
           >
-            <Card style={[styles.actionCard, { backgroundColor: theme.colors.surface }]}>
+            <Card style={[styles.actionCard, cyberpunkEffects.cardGlow(), { backgroundColor: `${theme.colors.surface}E6` }]}>
               <Card.Content style={styles.actionContent}>
-                <View style={[styles.actionIconContainer, { backgroundColor: theme.colors.secondaryContainer }]}>
+                <View style={[styles.actionIconContainer, cyberpunkEffects.neonGlow(theme.colors.secondary), { backgroundColor: `${theme.colors.secondaryContainer}E6` }]}>
                   <MaterialCommunityIcon
                     name={action.icon as any}
                     size={24}
@@ -72,7 +74,7 @@ export const QuickActions: React.FC = () => {
                   />
                 </View>
                 
-                <Text variant="labelLarge" style={[styles.actionTitle, { color: theme.colors.onSurface }]}>
+                <Text variant="labelLarge" style={[styles.actionTitle, cyberpunkEffects.textGlow(), { color: theme.colors.onSurface }]}>
                   {action.title}
                 </Text>
                 

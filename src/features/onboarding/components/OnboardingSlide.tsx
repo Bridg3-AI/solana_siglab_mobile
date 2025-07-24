@@ -3,6 +3,8 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { OnboardingStep } from '../types';
+import { cyberpunkEffects } from '../../../theme/cyberpunkEffects';
+import { CyberpunkColors } from '../../../theme/cyberpunkTheme';
 
 const { width } = Dimensions.get('window');
 
@@ -15,9 +17,9 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
 
   return (
     <View style={styles.container}>
-      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
+      <Card style={[styles.card, cyberpunkEffects.holographicCard()]}>
         <Card.Content style={styles.cardContent}>
-          <View style={[styles.iconContainer, { backgroundColor: theme.colors.primaryContainer }]}>
+          <View style={[styles.iconContainer, cyberpunkEffects.neonGlow(theme.colors.primary), { backgroundColor: `${theme.colors.primaryContainer}E6` }]}>
             <MaterialCommunityIcon
               name={step.icon as any}
               size={60}
@@ -25,7 +27,7 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
             />
           </View>
           
-          <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.onSurface }]}>
+          <Text variant="headlineMedium" style={[styles.title, cyberpunkEffects.textGlow(), { color: theme.colors.onSurface }]}>
             {step.title}
           </Text>
           

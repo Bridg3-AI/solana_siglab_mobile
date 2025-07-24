@@ -18,6 +18,7 @@ import {
 } from "react-native-paper";
 import { AppNavigator } from "./src/navigators/AppNavigator";
 import { ClusterProvider } from "./src/components/cluster/cluster-data-access";
+import { CyberpunkDarkTheme, CyberpunkLightTheme } from "./src/theme/cyberpunkTheme";
 
 const queryClient = new QueryClient();
 
@@ -29,18 +30,18 @@ export default function App() {
   });
 
   const CombinedDefaultTheme = {
-    ...MD3LightTheme,
+    ...CyberpunkLightTheme,
     ...LightTheme,
     colors: {
-      ...MD3LightTheme.colors,
+      ...CyberpunkLightTheme.colors,
       ...LightTheme.colors,
     },
   };
   const CombinedDarkTheme = {
-    ...MD3DarkTheme,
+    ...CyberpunkDarkTheme,
     ...DarkTheme,
     colors: {
-      ...MD3DarkTheme.colors,
+      ...CyberpunkDarkTheme.colors,
       ...DarkTheme.colors,
     },
   };
@@ -54,8 +55,8 @@ export default function App() {
               {
                 backgroundColor:
                   colorScheme === "dark"
-                    ? MD3DarkTheme.colors.background
-                    : MD3LightTheme.colors.background,
+                    ? CyberpunkDarkTheme.colors.background
+                    : CyberpunkLightTheme.colors.background,
               },
             ]}
           >

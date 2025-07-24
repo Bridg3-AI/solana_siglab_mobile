@@ -16,4 +16,16 @@ config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
 // Handle problematic packages
 config.resolver.platforms = ['ios', 'android', 'native', 'web'];
 
+config.resolver.alias = {
+  ...(config.resolver.alias || {}),
+  // Mock react-native-maps for web compatibility
+  'react-native-maps': require.resolve('./src/mocks/react-native-maps-web.js'),
+  'react-native-maps/lib/components/MapView': require.resolve('./src/mocks/react-native-maps-web.js'),
+  'react-native-maps/lib/components/Marker': require.resolve('./src/mocks/react-native-maps-web.js'),
+};
+
+// Add resolver to handle react-native-maps web compatibility
+config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
+config.resolver.platforms = ['ios', 'android', 'native', 'web'];
+
 module.exports = config;

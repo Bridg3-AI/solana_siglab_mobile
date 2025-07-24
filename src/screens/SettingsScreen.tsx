@@ -15,6 +15,8 @@ import {
 } from 'react-native-paper';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import ClusterPickerFeature from "../components/cluster/cluster-picker-feature";
+import { cyberpunkEffects } from '../theme/cyberpunkEffects';
+import { CyberpunkColors } from '../theme/cyberpunkTheme';
 
 export function SettingsScreen() {
   const [gpsEnabled, setGpsEnabled] = useState(true);
@@ -43,25 +45,34 @@ export function SettingsScreen() {
   return (
     <ScrollView style={styles.container}>
       {/* 프로필 섹션 */}
-      <Card style={styles.profileCard}>
+      <Card style={[styles.profileCard, cyberpunkEffects.holographicCard()]}>
         <Card.Content style={styles.profileContent}>
-          <Avatar.Icon size={60} icon="account" />
+          <Avatar.Icon 
+            size={60} 
+            icon="account" 
+            style={[cyberpunkEffects.neonGlow(CyberpunkColors.neonBlue)]}
+          />
           <View style={styles.profileInfo}>
-            <Text variant="titleLarge">사용자</Text>
+            <Text variant="titleLarge" style={[cyberpunkEffects.textGlow()]}>사용자</Text>
             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
               지갑 연결됨
             </Text>
           </View>
-          <Button mode="outlined" onPress={handleWalletConnect}>
+          <Button 
+            mode="outlined" 
+            onPress={handleWalletConnect}
+            style={[cyberpunkEffects.glowingButton(CyberpunkColors.electricPurple)]}
+            labelStyle={[cyberpunkEffects.textGlow()]}
+          >
             지갑 관리
           </Button>
         </Card.Content>
       </Card>
 
       {/* Solana 클러스터 설정 */}
-      <Card style={styles.sectionCard}>
+      <Card style={[styles.sectionCard, cyberpunkEffects.cardGlow()]}>
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow()]}>
             블록체인 설정
           </Text>
           <ClusterPickerFeature />
@@ -69,9 +80,9 @@ export function SettingsScreen() {
       </Card>
 
       {/* GPS 및 위치 설정 */}
-      <Card style={styles.sectionCard}>
+      <Card style={[styles.sectionCard, cyberpunkEffects.cardGlow()]}>
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow()]}>
             위치 및 GPS 설정
           </Text>
           
@@ -109,9 +120,9 @@ export function SettingsScreen() {
       </Card>
 
       {/* 보험 설정 */}
-      <Card style={styles.sectionCard}>
+      <Card style={[styles.sectionCard, cyberpunkEffects.cardGlow()]}>
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow()]}>
             보험 설정
           </Text>
           
@@ -149,9 +160,9 @@ export function SettingsScreen() {
       </Card>
 
       {/* 앱 설정 */}
-      <Card style={styles.sectionCard}>
+      <Card style={[styles.sectionCard, cyberpunkEffects.cardGlow()]}>
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow()]}>
             앱 설정
           </Text>
           
@@ -179,9 +190,9 @@ export function SettingsScreen() {
       </Card>
 
       {/* 개인정보 및 보안 */}
-      <Card style={styles.sectionCard}>
+      <Card style={[styles.sectionCard, cyberpunkEffects.cardGlow()]}>
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow()]}>
             개인정보 및 보안
           </Text>
           
@@ -210,9 +221,9 @@ export function SettingsScreen() {
       </Card>
 
       {/* 정보 */}
-      <Card style={styles.sectionCard}>
+      <Card style={[styles.sectionCard, cyberpunkEffects.cardGlow()]}>
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={[styles.sectionTitle, cyberpunkEffects.textGlow()]}>
             정보
           </Text>
           

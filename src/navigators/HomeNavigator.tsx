@@ -7,6 +7,8 @@ import { useTheme } from "react-native-paper";
 import ChatScreen from "../screens/ChatScreen";
 import MapScreen from "../screens/MapScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
+import { cyberpunkEffects } from "../theme/cyberpunkEffects";
+import { CyberpunkColors } from "../theme/cyberpunkTheme";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +24,16 @@ export function HomeNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         header: () => <TopBar />,
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+          borderTopWidth: 1,
+          borderTopColor: `${CyberpunkColors.neonBlue}40`,
+          ...cyberpunkEffects.neonGlow(CyberpunkColors.glowBlue),
+        },
+        tabBarActiveTintColor: CyberpunkColors.neonBlue,
+        tabBarInactiveTintColor: CyberpunkColors.glowPurple,
         tabBarIcon: ({ focused, color, size }) => {
+          const iconStyle = focused ? cyberpunkEffects.neonGlow(color) : {};
           switch (route.name) {
             case "Chat":
               return (
@@ -30,6 +41,7 @@ export function HomeNavigator() {
                   name={focused ? "chat" : "chat-outline"}
                   size={size}
                   color={color}
+                  style={iconStyle}
                 />
               );
             case "Map":
@@ -38,6 +50,7 @@ export function HomeNavigator() {
                   name={focused ? "map" : "map-outline"}
                   size={size}
                   color={color}
+                  style={iconStyle}
                 />
               );
             case "Settings":
@@ -46,6 +59,7 @@ export function HomeNavigator() {
                   name={focused ? "cog" : "cog-outline"}
                   size={size}
                   color={color}
+                  style={iconStyle}
                 />
               );
           }

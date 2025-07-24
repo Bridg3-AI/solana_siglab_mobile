@@ -1,9 +1,10 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
-import RNMapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { useMapStore } from '../hooks/useMapStore';
 import { useLocation } from '../hooks/useLocation';
 import { MapLocation } from '../types';
+
+const { MapView: RNMapView, PROVIDER_GOOGLE, Marker } = require('../../../mocks/react-native-maps-web.js');
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,7 +13,7 @@ export interface MapViewRef {
 }
 
 export const MapView = forwardRef<MapViewRef>((_, ref) => {
-  const mapRef = useRef<RNMapView>(null);
+  const mapRef = useRef<any>(null);
   const { currentLocation, selectedMarker } = useMapStore();
   
   // Initialize location

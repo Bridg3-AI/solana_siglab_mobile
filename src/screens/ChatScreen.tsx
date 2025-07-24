@@ -11,6 +11,8 @@ import {
   Avatar
 } from 'react-native-paper';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
+import { cyberpunkEffects } from '../theme/cyberpunkEffects';
+import { CyberpunkColors } from '../theme/cyberpunkTheme';
 
 const { width } = Dimensions.get('window');
 
@@ -96,17 +98,22 @@ export default function ChatScreen() {
           <Avatar.Icon
             size={32}
             icon="robot"
-            style={[styles.avatar, { backgroundColor: theme.colors.primaryContainer }]}
+            style={[styles.avatar, cyberpunkEffects.neonGlow(CyberpunkColors.matrixGreen), { backgroundColor: theme.colors.primaryContainer }]}
           />
         )}
         
         <Card
           style={[
             styles.messageCard,
+            message.isUser ? cyberpunkEffects.neonGlow(CyberpunkColors.neonBlue) : cyberpunkEffects.neonGlow(CyberpunkColors.electricPurple),
             {
               backgroundColor: message.isUser 
-                ? theme.colors.primary 
-                : theme.colors.surface,
+                ? `${theme.colors.primary}E6`
+                : `${theme.colors.surface}F0`,
+              borderWidth: 1,
+              borderColor: message.isUser 
+                ? `${CyberpunkColors.neonBlue}80`
+                : `${CyberpunkColors.electricPurple}80`,
             },
           ]}
         >
@@ -141,7 +148,7 @@ export default function ChatScreen() {
           <Avatar.Icon
             size={32}
             icon="account"
-            style={[styles.avatar, { backgroundColor: theme.colors.secondary }]}
+            style={[styles.avatar, cyberpunkEffects.neonGlow(CyberpunkColors.neonBlue), { backgroundColor: theme.colors.secondary }]}
           />
         )}
       </View>
@@ -154,14 +161,14 @@ export default function ChatScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       {/* 현재 위치 표시 */}
-      <Card style={[styles.locationCard, { backgroundColor: theme.colors.surfaceVariant }]}>
+      <Card style={[styles.locationCard, cyberpunkEffects.cardGlow(), { backgroundColor: `${theme.colors.surfaceVariant}E6` }]}>
         <Card.Content style={styles.locationContent}>
           <MaterialCommunityIcon 
             name="map-marker" 
             size={16} 
-            color={theme.colors.primary} 
+            color={CyberpunkColors.matrixGreen} 
           />
-          <Text variant="bodySmall" style={{ marginLeft: 5 }}>
+          <Text variant="bodySmall" style={[cyberpunkEffects.matrixText(), { marginLeft: 5, color: theme.colors.onSurface }]}>
             현재 위치: 서울시 강남구
           </Text>
         </Card.Content>
@@ -185,7 +192,8 @@ export default function ChatScreen() {
               key={action.id}
               icon={action.icon}
               onPress={() => handleQuickAction(action)}
-              style={[styles.quickActionChip, { backgroundColor: theme.colors.secondaryContainer }]}
+              style={[styles.quickActionChip, cyberpunkEffects.glowingButton(CyberpunkColors.electricPurple), { backgroundColor: `${theme.colors.secondaryContainer}E6` }]}
+              textStyle={cyberpunkEffects.textGlow()}
             >
               {action.label}
             </Chip>
@@ -215,7 +223,7 @@ export default function ChatScreen() {
       {/* 음성 입력 FAB */}
       <FAB
         icon="microphone"
-        style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+        style={[styles.fab, cyberpunkEffects.neonGlow(CyberpunkColors.neonPink), { backgroundColor: theme.colors.primary }]}
         onPress={() => {
           // 음성 입력 기능 구현
         }}

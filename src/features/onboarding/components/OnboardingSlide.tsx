@@ -4,12 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { OnboardingStep } from '../types';
 import {
-  CyberCard,
-  CyberText,
-  NeonText,
-  GlitchText,
-  useCyberpunkTheme
-} from '../../../components/cyberpunk';
+  SeekerCard,
+  SeekerText,
+  SeekerHeading,
+  useSeekerTheme
+} from '../../../components/seeker';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,7 +17,7 @@ interface OnboardingSlideProps {
 }
 
 export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
-  const { colors, spacing } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   
   // Animation refs
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -117,31 +116,31 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
 
   const getIconColor = () => {
     switch (step.id) {
-      case 1: return colors.neon.lime;
-      case 2: return colors.neon.cyan;
-      case 3: return colors.neon.magenta;
-      case 4: return colors.neon.purple;
-      default: return colors.neon.cyan;
+      case 1: return theme.colors.primary.teal;
+      case 2: return theme.colors.primary.darkTeal;
+      case 3: return theme.colors.primary.lightTeal;
+      case 4: return theme.colors.primary.accent;
+      default: return theme.colors.primary.teal;
     }
   };
 
-  const getCardVariant = (): 'hologram' | 'glass' | 'neon' => {
+  const getCardVariant = (): 'solid' | 'gradient' | 'glass' => {
     switch (step.id) {
-      case 1: return 'hologram';
+      case 1: return 'gradient';
       case 2: return 'glass';
-      case 3: return 'neon';
-      case 4: return 'hologram';
+      case 3: return 'solid';
+      case 4: return 'gradient';
       default: return 'glass';
     }
   };
 
-  const getCyberTitle = () => {
+  const getSeekerTitle = () => {
     switch (step.id) {
-      case 1: return 'GPS_MATRIX.sys';
-      case 2: return 'AI_NEURAL_NET.exe';
-      case 3: return 'AUTO_PROTOCOL.run';
-      case 4: return 'SOLANA_WALLET.mobile';
-      default: return 'SYSTEM.init';
+      case 1: return 'Seeker GPS System';
+      case 2: return 'AI Insurance Agent';
+      case 3: return 'Auto Coverage Protocol';
+      case 4: return 'Solana Mobile Wallet';
+      default: return 'Seeker System';
     }
   };
 
@@ -169,13 +168,13 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
         },
       ]}
     >
-      <CyberCard 
+      <SeekerCard 
         variant={getCardVariant()} 
-        glowColor={iconColor as any}
         style={styles.card}
+        elevated
       >
         <View style={styles.cardContent}>
-          {/* Holographic Icon Container */}
+          {/* Seeker Icon Container */}
           <View style={styles.iconSection}>
             {/* Particle effects around icon */}
             <View style={styles.particleContainer}>
@@ -220,7 +219,7 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
                 </Animated.View>
               </LinearGradient>
               
-              {/* Hologram scan lines */}
+              {/* Flow scan lines */}
               <Animated.View
                 style={[
                   styles.hologramScan,
@@ -236,7 +235,7 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
                     ],
                     opacity: hologramAnim.interpolate({
                       inputRange: [0, 0.5, 1],
-                      outputRange: [0, 0.8, 0],
+                      outputRange: [0, 0.6, 0],
                     }),
                   },
                 ]}
@@ -246,42 +245,42 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({ step }) => {
           
           {/* Content Section */}
           <View style={styles.textContent}>
-            {/* System file name */}
-            <CyberText 
-              variant="caption" 
+            {/* System label */}
+            <SeekerText 
+              variant="overline" 
               color="tertiary" 
               style={styles.systemLabel}
             >
-              >> {getCyberTitle()}
-            </CyberText>
+              {getSeekerTitle()}
+            </SeekerText>
             
-            {/* Main title with glitch effect */}
-            <GlitchText 
-              variant="h4" 
+            {/* Main title */}
+            <SeekerHeading 
+              level={2}
               style={[styles.title, { color: iconColor }]}
             >
-              {step.title.toUpperCase()}
-            </GlitchText>
+              {step.title}
+            </SeekerHeading>
             
             {/* Description */}
-            <CyberText 
+            <SeekerText 
               variant="body" 
               color="secondary" 
               style={styles.description}
             >
               {step.description}
-            </CyberText>
+            </SeekerText>
             
             {/* Status indicator */}
             <View style={styles.statusIndicator}>
               <View style={[styles.statusDot, { backgroundColor: iconColor }]} />
-              <CyberText variant="caption" color="tertiary" style={styles.statusText}>
-                SYSTEM_READY | MODULE_{step.id.toString().padStart(2, '0')}
-              </CyberText>
+              <SeekerText variant="caption" color="tertiary" style={styles.statusText}>
+                Step {step.id} of 4 • Ready
+              </SeekerText>
             </View>
           </View>
         </View>
-      </CyberCard>
+      </SeekerCard>
     </Animated.View>
   );
 };

@@ -4,11 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useOnboardingStore } from '../hooks/useOnboardingStore';
 import {
-  NeonButton,
-  CyberText,
-  TerminalText,
-  useCyberpunkTheme
-} from '../../../components/cyberpunk';
+  SeekerButton,
+  SeekerText,
+  useSeekerTheme
+} from '../../../components/seeker';
 
 const { width } = Dimensions.get('window');
 
@@ -17,7 +16,7 @@ interface OnboardingControlsProps {
 }
 
 export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComplete }) => {
-  const { colors, spacing } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   const { 
     currentStep, 
     steps, 
@@ -76,9 +75,9 @@ export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComple
   };
 
   const getStepColor = (index: number) => {
-    if (index < currentStep) return colors.neon.lime; // Completed
-    if (index === currentStep) return colors.neon.cyan; // Current
-    return colors.text.disabled; // Future
+    if (index < currentStep) return theme.colors.status.success; // Completed
+    if (index === currentStep) return theme.colors.primary.teal; // Current
+    return theme.colors.text.disabled; // Future
   };
 
   return (
@@ -87,15 +86,15 @@ export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComple
       <View style={styles.header}>
         <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
           <LinearGradient
-            colors={[colors.dark.deep, colors.dark.midnight]}
+            colors={[theme.colors.background.surface, theme.colors.background.elevated]}
             style={styles.skipGradient}
           >
             <MaterialCommunityIcon 
               name="close" 
               size={16} 
-              color={colors.text.tertiary} 
+              color={theme.colors.text.tertiary} 
             />
-            <TerminalText style={styles.skipText}>SKIP_INIT</TerminalText>
+            <SeekerText variant="caption" color="tertiary" style={styles.skipText}>Skip</SeekerText>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -114,7 +113,7 @@ export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComple
                     inputRange: [0, 1],
                     outputRange: ['0%', '100%'],
                   }),
-                  backgroundColor: colors.neon.cyan,
+                  backgroundColor: theme.colors.primary.teal,
                 },
               ]}
             />
@@ -135,8 +134,8 @@ export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComple
                         styles.connectionLine,
                         {
                           backgroundColor: index < currentStep 
-                            ? colors.neon.lime 
-                            : colors.border.subtle,
+                            ? theme.colors.status.success 
+                            : theme.colors.border.subtle,
                         }
                       ]} 
                     />
@@ -157,11 +156,11 @@ export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComple
                       <MaterialCommunityIcon 
                         name="check" 
                         size={12} 
-                        color={colors.dark.void} 
+                        color={theme.colors.text.primary} 
                       />
                     )}
                     {isActive && !isCompleted && (
-                      <View style={[styles.activeDot, { backgroundColor: colors.neon.cyan }]} />
+                      <View style={[styles.activeDot, { backgroundColor: theme.colors.primary.teal }]} />
                     )}
                   </Animated.View>
                 </View>
@@ -170,26 +169,26 @@ export const OnboardingControls: React.FC<OnboardingControlsProps> = ({ onComple
           </View>
           
           {/* Progress text */}
-          <CyberText variant="caption" color="tertiary" style={styles.progressText}>
-            MODULE {(currentStep + 1).toString().padStart(2, '0')} / {steps.length.toString().padStart(2, '0')}
-          </CyberText>
+          <SeekerText variant="caption" color="tertiary" style={styles.progressText}>
+            Step {currentStep + 1} of {steps.length}
+          </SeekerText>
         </View>
 
         {/* Navigation Button */}
-        <NeonButton
-          title={currentStep === steps.length - 1 ? 'INITIALIZE_SYSTEM' : 'NEXT_MODULE'}
+        <SeekerButton
+          title={currentStep === steps.length - 1 ? 'Get Started' : 'Next'}
           onPress={handleNext}
           variant="primary"
-          size="large"
+          size="lg"
           style={styles.nextButton}
         />
         
         {/* System status */}
         <View style={styles.systemStatus}>
-          <View style={[styles.statusDot, { backgroundColor: colors.neon.lime }]} />
-          <TerminalText style={styles.statusText}>
-            NEURAL_LINK: STABLE | READY_FOR_DEPLOY
-          </TerminalText>
+          <View style={[styles.statusDot, { backgroundColor: theme.colors.status.success }]} />
+          <SeekerText variant="caption" color="tertiary" style={styles.statusText}>
+            Seeker System Ready
+          </SeekerText>
         </View>
       </View>
     </View>

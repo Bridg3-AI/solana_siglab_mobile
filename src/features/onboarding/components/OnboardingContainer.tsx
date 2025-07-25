@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useOnboardingStore } from '../hooks/useOnboardingStore';
 import { OnboardingSlide } from './OnboardingSlide';
 import { OnboardingControls } from './OnboardingControls';
-import { useCyberpunkTheme } from '../../../components/cyberpunk';
+import { useSeekerTheme } from '../../../components/seeker';
 
 const { width, height } = Dimensions.get('window');
 
 export const OnboardingContainer: React.FC = () => {
-  const { colors } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   const navigation = useNavigation();
   const { currentStep, steps, completeOnboarding } = useOnboardingStore();
   
@@ -96,20 +96,14 @@ export const OnboardingContainer: React.FC = () => {
   const currentData = steps[currentStep];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.dark.void }]}>
-      {/* Cyberpunk Background */}
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+      {/* Seeker Background */}
       <LinearGradient
-        colors={[
-          colors.dark.void,
-          colors.dark.deep,
-          colors.dark.midnight,
-          colors.dark.void,
-        ]}
-        locations={[0, 0.3, 0.7, 1]}
+        colors={theme.colors.gradients.hero}
         style={StyleSheet.absoluteFill}
       />
       
-      {/* Neural Network Grid */}
+      {/* Seeker Grid */}
       <View style={styles.neuralGrid}>
         {/* Horizontal lines */}
         {Array.from({ length: 10 }).map((_, i) => (
@@ -119,8 +113,8 @@ export const OnboardingContainer: React.FC = () => {
               styles.gridLineHorizontal,
               {
                 top: (height / 10) * i,
-                backgroundColor: colors.border.subtle,
-                opacity: 0.3,
+                backgroundColor: theme.colors.border.subtle,
+                opacity: 0.1,
               },
             ]}
           />
@@ -133,8 +127,8 @@ export const OnboardingContainer: React.FC = () => {
               styles.gridLineVertical,
               {
                 left: (width / 6) * i,
-                backgroundColor: colors.border.subtle,
-                opacity: 0.3,
+                backgroundColor: theme.colors.border.subtle,
+                opacity: 0.1,
               },
             ]}
           />
@@ -149,8 +143,8 @@ export const OnboardingContainer: React.FC = () => {
             style={[
               styles.particle,
               {
-                backgroundColor: index % 3 === 0 ? colors.neon.cyan : 
-                                index % 3 === 1 ? colors.neon.magenta : colors.neon.lime,
+                backgroundColor: index % 3 === 0 ? theme.colors.primary.teal : 
+                                index % 3 === 1 ? theme.colors.primary.darkTeal : theme.colors.primary.lightTeal,
                 transform: [
                   { translateX: particle.x },
                   { translateY: particle.y },
@@ -163,7 +157,7 @@ export const OnboardingContainer: React.FC = () => {
         ))}
       </View>
       
-      {/* Matrix Rain Effect */}
+      {/* Flow Effect */}
       <Animated.View
         style={[
           styles.matrixRain,
@@ -186,8 +180,8 @@ export const OnboardingContainer: React.FC = () => {
               styles.rainColumn,
               {
                 left: (width / 5) * i,
-                backgroundColor: colors.neon.lime,
-                opacity: 0.4,
+                backgroundColor: theme.colors.primary.teal,
+                opacity: 0.2,
               },
             ]}
           />

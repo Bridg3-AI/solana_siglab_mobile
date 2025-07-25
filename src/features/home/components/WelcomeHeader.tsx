@@ -1,196 +1,97 @@
-import React, { useRef, useEffect } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAuthorization } from '../../../utils/useAuthorization';
 import { 
-  CyberCard, 
-  CyberText, 
-  NeonText, 
-  GlitchText,
-  useCyberpunkTheme 
-} from '../../../components/cyberpunk';
+  SeekerCard, 
+  SeekerText, 
+  SeekerHeading,
+  useSeekerTheme 
+} from '../../../components/seeker';
 
 export const WelcomeHeader: React.FC = () => {
-  const { colors, spacing } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   const { selectedAccount } = useAuthorization();
-  
-  // Animation refs
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const glitchAnim = useRef(new Animated.Value(0)).current;
-  const rotateAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    // Pulse animation for the AI robot
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.2,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-
-    // Rotation animation for holographic effect
-    Animated.loop(
-      Animated.timing(rotateAnim, {
-        toValue: 1,
-        duration: 20000,
-        useNativeDriver: true,
-      })
-    ).start();
-
-    // Glitch effect trigger
-    const glitchInterval = setInterval(() => {
-      Animated.sequence([
-        Animated.timing(glitchAnim, {
-          toValue: 1,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(glitchAnim, {
-          toValue: 0,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }, 8000);
-
-    return () => clearInterval(glitchInterval);
-  }, []);
-
-  const rotateInterpolate = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
 
   return (
-    <CyberCard variant="hologram" glowColor="cyan" style={styles.card}>
+    <SeekerCard variant="gradient" style={styles.card} elevated>
       <View style={styles.content}>
-        {/* Holographic AI Avatar */}
+        {/* Clean Professional Avatar */}
         <View style={styles.avatarContainer}>
-          <Animated.View
-            style={[
-              styles.avatarBackground,
-              {
-                transform: [
-                  { scale: pulseAnim },
-                  { rotate: rotateInterpolate },
-                ],
-              },
-            ]}
+          <LinearGradient
+            colors={theme.colors.gradients.primary}
+            style={styles.avatarBackground}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
           >
-            <LinearGradient
-              colors={colors?.gradients?.hologram || ['rgba(0,255,255,0.8)', 'rgba(255,0,255,0.8)', 'rgba(139,0,255,0.8)']}
-              style={styles.avatarGradient}
-            >
-              <MaterialCommunityIcon
-                name="robot"
-                size={32}
-                color={colors.dark.void}
-              />
-            </LinearGradient>
-          </Animated.View>
-          
-          {/* Neural connections */}
-          <View style={styles.neuralConnections}>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.neuralLine,
-                  {
-                    backgroundColor: colors.neon.cyan,
-                    opacity: 0.6,
-                    transform: [{ rotate: `${i * 45}deg` }],
-                  },
-                ]}
-              />
-            ))}
-          </View>
+            <MaterialCommunityIcon
+              name="shield-account"
+              size={32}
+              color={theme.colors.text.primary}
+            />
+          </LinearGradient>
         </View>
         
         <View style={styles.textContainer}>
           {selectedAccount ? (
             <>
-              <GlitchText variant="h3" style={styles.title}>
-                NEURAL LINK ACTIVE
-              </GlitchText>
-              <CyberText variant="body" color="secondary" style={styles.subtitle}>
-                >> AI AGENT READY FOR GPS-BASED INSURANCE PROTOCOLS
-              </CyberText>
-              <NeonText neonColor="lime" variant="caption" style={styles.status}>
-                STATUS: CONNECTED | LOCATION: SCANNING
-              </NeonText>
+              <SeekerHeading level={2} style={styles.title}>
+                Seeker
+              </SeekerHeading>
+              <SeekerText variant="body" color="secondary" style={styles.subtitle}>
+                GPS-based AI insurance agent ready for deployment
+              </SeekerText>
+              <View style={styles.statusContainer}>
+                <View style={[styles.statusDot, { backgroundColor: theme.colors.status.success }]} />
+                <SeekerText variant="caption" color="accent" style={styles.status}>
+                  Connected · Location Services Active
+                </SeekerText>
+              </View>
             </>
           ) : (
             <>
-              <GlitchText variant="h3" style={styles.title}>
-                WELCOME TO CYBER INSURANCE
-              </GlitchText>
-              <CyberText variant="body" color="secondary" style={styles.subtitle}>
-                >> INITIATE WALLET CONNECTION TO ACCESS NEURAL NETWORK
-              </CyberText>
-              <NeonText neonColor="red" variant="caption" style={styles.status}>
-                STATUS: WALLET DISCONNECTED | ACCESS: RESTRICTED
-              </NeonText>
+              <SeekerHeading level={2} style={styles.title}>
+                Welcome to Seeker
+              </SeekerHeading>
+              <SeekerText variant="body" color="secondary" style={styles.subtitle}>
+                Connect your wallet to access location-based insurance services
+              </SeekerText>
+              <View style={styles.statusContainer}>
+                <View style={[styles.statusDot, { backgroundColor: theme.colors.status.warning }]} />
+                <SeekerText variant="caption" color="tertiary" style={styles.status}>
+                  Wallet Disconnected · Limited Access
+                </SeekerText>
+              </View>
             </>
           )}
         </View>
       </View>
-    </CyberCard>
+    </SeekerCard>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
     marginBottom: 24,
-    overflow: 'hidden',
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 24,
-    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
   },
   
   // Avatar styles
   avatarContainer: {
-    position: 'relative',
     marginRight: 20,
-    width: 64,
-    height: 64,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   avatarBackground: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    overflow: 'hidden',
-  },
-  avatarGradient: {
-    flex: 1,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  neuralConnections: {
-    position: 'absolute',
-    width: 64,
-    height: 64,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  neuralLine: {
-    position: 'absolute',
-    width: 32,
-    height: 1,
   },
   
   // Text styles
@@ -198,16 +99,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    marginBottom: 8,
-    letterSpacing: 1,
+    marginBottom: 6,
   },
   subtitle: {
-    marginBottom: 6,
-    lineHeight: 18,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
   },
   status: {
-    fontSize: 10,
-    letterSpacing: 0.5,
-    opacity: 0.9,
+    fontSize: 12,
   },
 });

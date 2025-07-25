@@ -1,7 +1,12 @@
-// iOS-specific App entry point (without Solana Mobile Wallet Adapter)
+// iOS-specific App entry point (with iOS polyfills, without Solana Mobile Wallet Adapter)
+
+// iOS Polyfills - Must be first
+import "./src/polyfills.ios";
+
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { ConnectionProvider } from "./src/utils/ConnectionProvider.ios";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   DarkTheme as NavigationDarkTheme,
@@ -10,36 +15,51 @@ import {
   adaptNavigationTheme,
 } from "react-native-paper";
 import { AppNavigator } from "./src/navigators/AppNavigator";
-import { CyberpunkThemeProvider, CyberpunkTheme } from "./src/components/cyberpunk";
+import { ClusterProvider } from "./src/components/cluster/cluster-data-access.ios";
+import { SeekerThemeProvider, SeekerTheme } from "./src/components/seeker";
+import { WalletProvider } from "./src/components/wallet";
 
 const queryClient = new QueryClient();
 
 export default function App() {
-  // Create cyberpunk navigation theme
+  // Create Seeker navigation theme for iOS
   const { DarkTheme } = adaptNavigationTheme({
     reactNavigationDark: NavigationDarkTheme,
   });
 
-  const CyberpunkNavigationTheme = {
+  const SeekerNavigationTheme = {
     ...DarkTheme,
     colors: {
       ...DarkTheme.colors,
-      primary: CyberpunkTheme.colors.primary,
-      background: CyberpunkTheme.colors.background,
-      card: CyberpunkTheme.colors.surface,
-      text: CyberpunkTheme.colors.onSurface,
-      border: CyberpunkTheme.colors.outline,
-      notification: CyberpunkTheme.colors.primary,
+      primary: SeekerTheme.colors.primary.teal,
+      background: SeekerTheme.colors.background.primary,
+      card: SeekerTheme.colors.background.surface,
+      text: SeekerTheme.colors.text.primary,
+      border: SeekerTheme.colors.border.subtle,
+      notification: SeekerTheme.colors.status.error,
     },
   };
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CyberpunkThemeProvider theme={CyberpunkTheme}>
-        <SafeAreaView style={styles.shell}>
-          <AppNavigator theme={CyberpunkNavigationTheme} />
-        </SafeAreaView>
-      </CyberpunkThemeProvider>
+      <ClusterProvider>
+        <ConnectionProvider config={{ commitment: "processed" }}>
+          <WalletProvider>
+            <SeekerThemeProvider>
+              <SafeAreaView
+                style={[
+                  styles.shell,
+                  {
+                    backgroundColor: SeekerTheme.colors.background.primary,
+                  },
+                ]}
+              >
+                <AppNavigator theme={SeekerNavigationTheme} />
+              </SafeAreaView>
+            </SeekerThemeProvider>
+          </WalletProvider>
+        </ConnectionProvider>
+      </ClusterProvider>
     </QueryClientProvider>
   );
 }

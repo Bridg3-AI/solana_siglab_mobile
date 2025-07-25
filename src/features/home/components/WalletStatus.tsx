@@ -1,109 +1,51 @@
-import React, { useRef, useEffect } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAuthorization } from '../../../utils/useAuthorization';
 import { SignInFeature } from '../../../components/sign-in/sign-in-feature';
 import { AccountDetailFeature } from '../../../components/account/account-detail-feature';
 import { 
-  CyberCard, 
-  CyberText, 
-  NeonText,
-  TerminalText,
-  useCyberpunkTheme 
-} from '../../../components/cyberpunk';
+  SeekerCard, 
+  SeekerText, 
+  SeekerHeading,
+  useSeekerTheme 
+} from '../../../components/seeker';
 
 export const WalletStatus: React.FC = () => {
-  const { colors, spacing } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   const { selectedAccount } = useAuthorization();
-  
-  // Animation refs
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const scanAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    // Pulse animation for connected status
-    if (selectedAccount) {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, {
-            toValue: 1.1,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-          Animated.timing(pulseAnim, {
-            toValue: 1,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    } else {
-      // Scanning animation for disconnected state
-      Animated.loop(
-        Animated.timing(scanAnim, {
-          toValue: 1,
-          duration: 3000,
-          useNativeDriver: true,
-        })
-      ).start();
-    }
-  }, [selectedAccount]);
-
-  const scanTranslate = scanAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-100, 100],
-  });
 
   if (selectedAccount) {
     return (
       <View style={styles.container}>
-        <CyberText variant="overline" color="tertiary" style={styles.sectionTitle}>
-          >> NEURAL WALLET STATUS
-        </CyberText>
+        <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+          Wallet Status
+        </SeekerText>
         
-        <CyberCard variant="neon" glowColor="lime" style={styles.connectedCard}>
+        <SeekerCard variant="solid" style={styles.connectedCard} elevated>
           <View style={styles.connectedContent}>
             {/* Connection Status Header */}
             <View style={styles.statusHeader}>
-              <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
-                <LinearGradient
-                  colors={colors?.gradients?.matrix || ['#00FF00', '#008F11', '#004400']}
-                  style={styles.connectionIndicator}
-                >
-                  <MaterialCommunityIcon
-                    name="check-network-outline"
-                    size={24}
-                    color={colors.dark.void}
-                  />
-                </LinearGradient>
-              </Animated.View>
+              <LinearGradient
+                colors={theme.colors.gradients.primary}
+                style={styles.connectionIndicator}
+              >
+                <MaterialCommunityIcon
+                  name="check-circle"
+                  size={24}
+                  color={theme.colors.text.primary}
+                />
+              </LinearGradient>
               
               <View style={styles.statusText}>
-                <NeonText neonColor="lime" variant="h6" style={styles.connectedTitle}>
-                  WALLET SYNCHRONIZED
-                </NeonText>
-                <TerminalText style={styles.connectedStatus}>
-                  BLOCKCHAIN: SOLANA | NETWORK: ACTIVE
-                </TerminalText>
+                <SeekerHeading level={3} style={styles.connectedTitle}>
+                  Wallet Connected
+                </SeekerHeading>
+                <SeekerText variant="body" color="secondary" style={styles.connectedStatus}>
+                  Solana network • Ready for transactions
+                </SeekerText>
               </View>
-            </View>
-            
-            {/* Neural patterns */}
-            <View style={styles.neuralPatterns}>
-              {Array.from({ length: 4 }).map((_, i) => (
-                <View
-                  key={i}
-                  style={[
-                    styles.neuralDot,
-                    {
-                      backgroundColor: colors.neon.lime,
-                      left: `${20 + i * 20}%`,
-                      animationDelay: `${i * 200}ms`,
-                    },
-                  ]}
-                />
-              ))}
             </View>
             
             {/* Account Details */}
@@ -111,61 +53,37 @@ export const WalletStatus: React.FC = () => {
               <AccountDetailFeature />
             </View>
           </View>
-        </CyberCard>
+        </SeekerCard>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <CyberText variant="overline" color="tertiary" style={styles.sectionTitle}>
-        >> WALLET CONNECTION REQUIRED
-      </CyberText>
+      <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+        Wallet Connection
+      </SeekerText>
       
-      <CyberCard variant="glass" style={styles.disconnectedCard}>
+      <SeekerCard variant="outline" style={styles.disconnectedCard}>
         <View style={styles.disconnectedContent}>
-          {/* Scanning Animation */}
-          <View style={styles.scanContainer}>
-            <Animated.View
-              style={[
-                styles.scanLine,
-                {
-                  backgroundColor: colors.neon.red,
-                  transform: [{ translateX: scanTranslate }],
-                },
-              ]}
-            />
-            <View style={styles.walletIconContainer}>
+          {/* Wallet Icon */}
+          <View style={styles.walletIconContainer}>
+            <View style={[styles.iconBackground, { backgroundColor: theme.colors.status.warning + '20' }]}>
               <MaterialCommunityIcon
                 name="wallet-outline"
                 size={40}
-                color={colors.neon.red}
-                style={styles.walletIcon}
+                color={theme.colors.status.warning}
               />
-              {/* Disconnected overlay */}
-              <View style={styles.disconnectedOverlay}>
-                <MaterialCommunityIcon
-                  name="close-circle"
-                  size={20}
-                  color={colors.neon.red}
-                />
-              </View>
             </View>
           </View>
           
           <View style={styles.disconnectedText}>
-            <NeonText neonColor="red" variant="h6" style={styles.disconnectedTitle}>
-              NEURAL LINK OFFLINE
-            </NeonText>
-            <CyberText variant="body" color="secondary" style={styles.disconnectedDescription}>
-              >> CONNECT SOLANA MOBILE WALLET TO ACCESS
-            </CyberText>
-            <CyberText variant="body" color="secondary" style={styles.disconnectedDescription}>
-              >> GPS-BASED INSURANCE PROTOCOLS
-            </CyberText>
-            <TerminalText style={styles.systemStatus}>
-              STATUS: DISCONNECTED | ACCESS_LEVEL: RESTRICTED
-            </TerminalText>
+            <SeekerHeading level={3} style={styles.disconnectedTitle}>
+              Connect Your Wallet
+            </SeekerHeading>
+            <SeekerText variant="body" color="secondary" style={styles.disconnectedDescription}>
+              Connect your Solana wallet to access GPS-based insurance services and manage your coverage.
+            </SeekerText>
           </View>
           
           {/* Connection Interface */}
@@ -173,7 +91,7 @@ export const WalletStatus: React.FC = () => {
             <SignInFeature />
           </View>
         </View>
-      </CyberCard>
+      </SeekerCard>
     </View>
   );
 };
@@ -185,20 +103,24 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginBottom: 16,
     marginLeft: 4,
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase',
     letterSpacing: 1,
   },
   
   // Connected state styles
   connectedCard: {
-    overflow: 'hidden',
+    paddingVertical: 20,
+    paddingHorizontal: 24,
   },
   connectedContent: {
-    padding: 20,
+    // No additional padding needed, already in card
   },
   statusHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   connectionIndicator: {
     width: 48,
@@ -213,24 +135,9 @@ const styles = StyleSheet.create({
   },
   connectedTitle: {
     marginBottom: 4,
-    letterSpacing: 1,
   },
   connectedStatus: {
-    fontSize: 11,
-    opacity: 0.8,
-  },
-  neuralPatterns: {
-    position: 'relative',
-    height: 20,
-    marginBottom: 16,
-  },
-  neuralDot: {
-    position: 'absolute',
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    top: '50%',
-    opacity: 0.8,
+    fontSize: 14,
   },
   accountWrapper: {
     width: '100%',
@@ -238,62 +145,37 @@ const styles = StyleSheet.create({
   
   // Disconnected state styles
   disconnectedCard: {
-    overflow: 'hidden',
+    paddingVertical: 32,
+    paddingHorizontal: 24,
   },
   disconnectedContent: {
-    padding: 24,
     alignItems: 'center',
-  },
-  scanContainer: {
-    position: 'relative',
-    width: 120,
-    height: 80,
-    marginBottom: 20,
-    overflow: 'hidden',
-  },
-  scanLine: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: 2,
-    opacity: 0.6,
   },
   walletIconContainer: {
-    position: 'relative',
+    marginBottom: 24,
+  },
+  iconBackground: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
-  },
-  walletIcon: {
-    opacity: 0.7,
-  },
-  disconnectedOverlay: {
-    position: 'absolute',
-    bottom: -2,
-    right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    borderRadius: 10,
   },
   disconnectedText: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 32,
   },
   disconnectedTitle: {
     marginBottom: 12,
-    letterSpacing: 1,
+    textAlign: 'center',
   },
   disconnectedDescription: {
     textAlign: 'center',
-    marginBottom: 4,
-    lineHeight: 18,
-  },
-  systemStatus: {
-    fontSize: 10,
-    marginTop: 8,
-    opacity: 0.7,
-    letterSpacing: 0.5,
+    lineHeight: 20,
+    paddingHorizontal: 20,
   },
   connectionInterface: {
     width: '100%',
+    alignItems: 'center',
   },
 });

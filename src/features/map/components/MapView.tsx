@@ -1,10 +1,17 @@
-import React, { useImperativeHandle, forwardRef } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useImperativeHandle, forwardRef, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useMapStore } from '../hooks/useMapStore';
 import { useLocation } from '../hooks/useLocation';
 import { MapLocation } from '../types';
+import { 
+  SeekerCard, 
+  SeekerText, 
+  SeekerButton,
+  useSeekerTheme 
+} from '../../../components/seeker';
 
 
 export interface MapViewRef {
@@ -13,6 +20,8 @@ export interface MapViewRef {
 
 export const MapView = forwardRef<MapViewRef>((_, ref) => {
   const { currentLocation, selectedMarker } = useMapStore();
+  const { theme } = useSeekerTheme();
+  const [showInsurancePanel, setShowInsurancePanel] = useState(false);
   
   // Initialize location
   useLocation();
@@ -80,11 +89,11 @@ export const MapView = forwardRef<MapViewRef>((_, ref) => {
         style={styles.map}
         startInLoadingState={true}
         renderLoading={() => (
-          <View style={styles.loadingContainer}>
-            <MaterialCommunityIcon name="loading" size={32} color="#007AFF" />
-            <Text style={styles.loadingText}>
+          <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background.primary }]}>
+            <MaterialCommunityIcon name="loading" size={32} color={theme.colors.primary.teal} />
+            <SeekerText variant="body" color="secondary" style={styles.loadingText}>
               {currentLocation ? 'Loading map...' : 'Getting your location...'}
-            </Text>
+            </SeekerText>
           </View>
         )}
         onError={(syntheticEvent) => {
@@ -97,6 +106,186 @@ export const MapView = forwardRef<MapViewRef>((_, ref) => {
         domStorageEnabled={true}
         scalesPageToFit={true}
       />
+
+      {/* Top Status Bar */}
+      <View style={styles.topOverlay}>
+        <SeekerCard variant="glass" style={styles.statusCard}>
+          <View style={styles.statusContent}>
+            <View style={[styles.locationIcon, { backgroundColor: theme.colors.status.success + '20' }]}>
+              <MaterialCommunityIcon 
+                name="crosshairs-gps" 
+                size={16} 
+                color={theme.colors.status.success} 
+              />
+            </View>
+            <View style={styles.locationInfo}>
+              <SeekerText variant="caption" color="primary" style={styles.locationLabel}>
+                {currentLocation ? 'Location Found' : 'Searching...'}
+              </SeekerText>
+              <SeekerText variant="caption" color="secondary" style={styles.coordinates}>
+                {currentLocation ? 
+                  `${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}` : 
+                  'GPS Acquiring...'
+                }
+              </SeekerText>
+            </View>
+            <TouchableOpacity 
+              style={[styles.refreshButton, { backgroundColor: theme.colors.primary.teal + '20' }]}
+              onPress={() => {
+                // Refresh location logic
+                console.log('Refreshing location...');
+              }}
+            >
+              <MaterialCommunityIcon 
+                name="refresh" 
+                size={16} 
+                color={theme.colors.primary.teal} 
+              />
+            </TouchableOpacity>
+          </View>
+        </SeekerCard>
+      </View>
+
+      {/* Bottom Insurance Panel */}
+      <View style={styles.bottomOverlay}>
+        {showInsurancePanel ? (
+          <SeekerCard variant="solid" style={styles.insurancePanel} elevated>
+            <View style={styles.panelHeader}>
+              <View>
+                <SeekerText variant="h3" color="primary" style={styles.panelTitle}>
+                  Coverage Available
+                </SeekerText>
+                <SeekerText variant="body" color="secondary" style={styles.panelSubtitle}>
+                  Location-based insurance for this area
+                </SeekerText>
+              </View>
+              <TouchableOpacity 
+                onPress={() => setShowInsurancePanel(false)}
+                style={styles.closeButton}
+              >
+                <MaterialCommunityIcon 
+                  name="close" 
+                  size={20} 
+                  color={theme.colors.text.tertiary} 
+                />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.insuranceOptions}>
+              <TouchableOpacity style={styles.insuranceCard}>
+                <View style={[styles.insuranceIcon, { backgroundColor: theme.colors.primary.teal + '20' }]}>
+                  <MaterialCommunityIcon 
+                    name="shield-check" 
+                    size={20} 
+                    color={theme.colors.primary.teal} 
+                  />
+                </View>
+                <View style={styles.insuranceContent}>
+                  <SeekerText variant="body" color="primary" style={styles.insuranceTitle}>
+                    Travel Protection
+                  </SeekerText>
+                  <SeekerText variant="caption" color="secondary">
+                    Coverage for trips and activities
+                  </SeekerText>
+                </View>
+                <SeekerText variant="body" color="accent" style={styles.insurancePrice}>
+                  0.05 SOL
+                </SeekerText>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.insuranceCard}>
+                <View style={[styles.insuranceIcon, { backgroundColor: theme.colors.status.warning + '20' }]}>
+                  <MaterialCommunityIcon 
+                    name="map-marker-radius" 
+                    size={20} 
+                    color={theme.colors.status.warning} 
+                  />
+                </View>
+                <View style={styles.insuranceContent}>
+                  <SeekerText variant="body" color="primary" style={styles.insuranceTitle}>
+                    Location Shield
+                  </SeekerText>
+                  <SeekerText variant="caption" color="secondary">
+                    GPS-triggered coverage zone
+                  </SeekerText>
+                </View>
+                <SeekerText variant="body" color="accent" style={styles.insurancePrice}>
+                  0.03 SOL
+                </SeekerText>
+              </TouchableOpacity>
+            </View>
+
+            <SeekerButton
+              title="Get Coverage"
+              variant="primary"
+              fullWidth
+              style={styles.getCoverageButton}
+              onPress={() => {
+                console.log('Getting coverage...');
+              }}
+            />
+          </SeekerCard>
+        ) : (
+          <SeekerCard variant="solid" style={styles.quickAccessCard} elevated>
+            <TouchableOpacity 
+              style={styles.quickAccessContent}
+              onPress={() => setShowInsurancePanel(true)}
+            >
+              <View style={[styles.quickAccessIcon, { backgroundColor: theme.colors.primary.teal + '20' }]}>
+                <MaterialCommunityIcon 
+                  name="shield-plus" 
+                  size={20} 
+                  color={theme.colors.primary.teal} 
+                />
+              </View>
+              <View style={styles.quickAccessText}>
+                <SeekerText variant="body" color="primary" style={styles.quickAccessTitle}>
+                  Insurance Available
+                </SeekerText>
+                <SeekerText variant="caption" color="secondary">
+                  Tap to view coverage options
+                </SeekerText>
+              </View>
+              <MaterialCommunityIcon 
+                name="chevron-up" 
+                size={20} 
+                color={theme.colors.text.tertiary} 
+              />
+            </TouchableOpacity>
+          </SeekerCard>
+        )}
+      </View>
+
+      {/* Floating Action Buttons */}
+      <View style={styles.fabContainer}>
+        <TouchableOpacity 
+          style={[styles.fab, { backgroundColor: theme.colors.background.surface }]}
+          onPress={() => {
+            // Center on current location
+            console.log('Centering on location...');
+          }}
+        >
+          <MaterialCommunityIcon 
+            name="crosshairs-gps" 
+            size={24} 
+            color={theme.colors.primary.teal} 
+          />
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.fab, { backgroundColor: theme.colors.background.surface, marginTop: 12 }]}
+          onPress={() => {
+            // Toggle layers
+            console.log('Toggling layers...');
+          }}
+        >
+          <MaterialCommunityIcon 
+            name="layers" 
+            size={24} 
+            color={theme.colors.primary.teal} 
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 });
@@ -119,14 +308,187 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     zIndex: 1,
   },
   
   loadingText: {
-    fontSize: 16,
-    color: '#666',
     marginTop: 12,
     textAlign: 'center',
+  },
+
+  // Top overlay styles
+  topOverlay: {
+    position: 'absolute',
+    top: 60,
+    left: 16,
+    right: 16,
+    zIndex: 10,
+  },
+  
+  statusCard: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  
+  statusContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  locationIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  
+  locationInfo: {
+    flex: 1,
+  },
+  
+  locationLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  
+  coordinates: {
+    fontSize: 11,
+  },
+  
+  refreshButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Bottom overlay styles
+  bottomOverlay: {
+    position: 'absolute',
+    bottom: 20,
+    left: 16,
+    right: 16,
+    zIndex: 10,
+  },
+  
+  // Insurance panel styles
+  insurancePanel: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    maxHeight: 300,
+  },
+  
+  panelHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  
+  panelTitle: {
+    marginBottom: 4,
+  },
+  
+  panelSubtitle: {
+    fontSize: 14,
+  },
+  
+  closeButton: {
+    padding: 4,
+  },
+  
+  insuranceOptions: {
+    marginBottom: 20,
+  },
+  
+  insuranceCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  
+  insuranceIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  
+  insuranceContent: {
+    flex: 1,
+  },
+  
+  insuranceTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  
+  insurancePrice: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  
+  getCoverageButton: {
+    marginTop: 8,
+  },
+
+  // Quick access card styles
+  quickAccessCard: {
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  
+  quickAccessContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  quickAccessIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  
+  quickAccessText: {
+    flex: 1,
+  },
+  
+  quickAccessTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+
+  // Floating Action Buttons
+  fabContainer: {
+    position: 'absolute',
+    right: 16,
+    bottom: 140,
+    zIndex: 10,
+  },
+  
+  fab: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
 });

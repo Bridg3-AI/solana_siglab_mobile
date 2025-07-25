@@ -2,25 +2,25 @@ import React from 'react';
 import { View, StyleSheet } from "react-native";
 import { ConnectButton, SignInButton } from "./sign-in-ui";
 import {
-  CyberText,
-  useCyberpunkTheme
-} from '../cyberpunk';
+  SeekerText,
+  useSeekerTheme
+} from '../seeker';
 
 export function SignInFeature() {
-  const { colors } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   
   return (
     <View style={styles.container}>
-      {/* Circuit board pattern */}
-      <View style={styles.circuitPattern}>
-        <View style={[styles.circuitLine, { backgroundColor: colors.neon.cyan }]} />
-        <View style={[styles.circuitNode, { backgroundColor: colors.neon.cyan }]} />
-        <View style={[styles.circuitLineVertical, { backgroundColor: colors.neon.magenta }]} />
+      {/* Clean accent pattern */}
+      <View style={styles.accentPattern}>
+        <View style={[styles.accentLine, { backgroundColor: theme.colors.primary.teal }]} />
+        <View style={[styles.accentNode, { backgroundColor: theme.colors.primary.teal }]} />
+        <View style={[styles.accentLineVertical, { backgroundColor: theme.colors.primary.darkTeal }]} />
       </View>
       
-      <CyberText variant="caption" color="tertiary" style={styles.systemLabel}>
-        >> WALLET_CONNECTION_PROTOCOL
-      </CyberText>
+      <SeekerText variant="overline" color="tertiary" style={styles.systemLabel}>
+        Wallet Connection
+      </SeekerText>
       
       <View style={styles.buttonGroup}>
         <ConnectButton />
@@ -36,30 +36,30 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   
-  // Circuit board pattern
-  circuitPattern: {
+  // Clean accent pattern
+  accentPattern: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    opacity: 0.3,
+    opacity: 0.1,
   },
-  circuitLine: {
+  accentLine: {
     position: 'absolute',
     top: '30%',
     left: '20%',
     right: '20%',
     height: 1,
   },
-  circuitLineVertical: {
+  accentLineVertical: {
     position: 'absolute',
     left: '50%',
     top: '30%',
     bottom: '20%',
     width: 1,
   },
-  circuitNode: {
+  accentNode: {
     position: 'absolute',
     top: '28%',
     left: '48%',

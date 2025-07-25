@@ -1,20 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Dimensions, KeyboardAvoidingView, Platform, Animated, TouchableOpacity } from 'react-native';
-import { 
-  TextInput as PaperTextInput, 
-  useTheme
-} from 'react-native-paper';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, ScrollView, Dimensions, KeyboardAvoidingView, Platform, TouchableOpacity, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { 
-  CyberCard, 
-  NeonButton, 
-  CyberText, 
-  NeonText, 
-  GlitchText,
-  TerminalText,
-  useCyberpunkTheme 
-} from '../components/cyberpunk';
+  SeekerCard, 
+  SeekerButton, 
+  SeekerText, 
+  SeekerHeading,
+  useSeekerTheme 
+} from '../components/seeker';
 
 const { width } = Dimensions.get('window');
 
@@ -33,54 +27,24 @@ interface Message {
 }
 
 const quickActions = [
-  { id: '1', label: 'TRAVEL_INSURANCE', icon: 'airplane', neonColor: 'cyan' as const },
-  { id: '2', label: 'FESTIVAL_SHIELD', icon: 'music', neonColor: 'magenta' as const },
-  { id: '3', label: 'MOUNTAIN_PROTOCOL', icon: 'image-filter-hdr', neonColor: 'purple' as const },
-  { id: '4', label: 'GPS_COVERAGE', icon: 'map-marker', neonColor: 'lime' as const },
+  { id: '1', label: 'Travel Insurance', icon: 'airplane' as const },
+  { id: '2', label: 'Event Coverage', icon: 'calendar-star' as const },
+  { id: '3', label: 'Adventure Sports', icon: 'hiking' as const },
+  { id: '4', label: 'GPS Coverage', icon: 'map-marker-radius' as const },
 ];
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'NEURAL LINK ESTABLISHED...\nGPS-BASED AI INSURANCE AGENT ONLINE\n> INITIALIZING CYBERSECURITY PROTOCOLS\n> SCANNING LOCATION DATA\n\nHOW MAY I ASSIST WITH YOUR INSURANCE NEEDS?',
+      text: 'Hello! I\'m your Seeker AI insurance assistant. I\'m here to help you find the perfect GPS-based coverage for your activities.\n\nWhat kind of insurance are you looking for today?',
       isUser: false,
       timestamp: new Date(),
     },
   ]);
   const [inputText, setInputText] = useState('');
-  const theme = useTheme();
-  const { colors, spacing } = useCyberpunkTheme();
+  const { theme } = useSeekerTheme();
   const scrollViewRef = useRef<ScrollView>(null);
-  
-  // Animation values
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    // Fade in animation
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-
-    // Pulse animation for AI elements
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.1,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
 
   const handleSendMessage = () => {
     if (inputText.trim()) {
@@ -94,15 +58,16 @@ export default function ChatScreen() {
       setMessages(prev => [...prev, newMessage]);
       setInputText('');
       
-      // AI 응답 시뮬레이션 - Cyberpunk style
+      // AI response simulation - Clean professional style
       setTimeout(() => {
         const aiResponse: Message = {
           id: (Date.now() + 1).toString(),
-          text: '> ACCESSING SATELLITE NETWORK...\n> TRIANGULATING GPS COORDINATES\n> ANALYZING RISK MATRIX\n\nLOCATION VERIFIED. GENERATING INSURANCE PROTOCOLS...',
+          text: 'I understand you\'re interested in that coverage. Let me check your location and provide personalized insurance options based on your GPS data.\n\nI\'ll analyze the risk factors for your area and suggest the best coverage plans.',
           isUser: false,
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, aiResponse]);
+        scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 1000);
     }
   };
@@ -110,112 +75,103 @@ export default function ChatScreen() {
   const handleQuickAction = (action: typeof quickActions[0]) => {
     const message: Message = {
       id: Date.now().toString(),
-      text: `EXECUTE ${action.label} PROTOCOL`,
+      text: `I'm interested in ${action.label}`,
       isUser: true,
       timestamp: new Date(),
     };
     setMessages(prev => [...prev, message]);
     
-    // AI response for protocol activation
+    // AI response for quick action
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `> ${action.label} ACTIVATED\n> SCANNING ENVIRONMENTAL DATA\n> CALCULATING PREMIUM MATRIX\n\nPROTOCOL READY FOR DEPLOYMENT`,
+        text: `Great choice! ${action.label} is perfect for your needs. I can help you set up coverage that automatically activates based on your location.\n\nWould you like me to show you available plans in your area?`,
         isUser: false,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, aiResponse]);
+      scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 1500);
   };
 
-  const CyberAvatar = ({ isUser, animate = false }: { isUser: boolean, animate?: boolean }) => {
-    const avatarContent = isUser ? (
-      <View style={styles.userAvatar}>
-        <MaterialCommunityIcon name="account-circle" size={24} color={colors.neon.cyan} />
+  const Avatar = ({ isUser }: { isUser: boolean }) => {
+    return isUser ? (
+      <View style={[styles.userAvatar, { backgroundColor: theme.colors.primary.teal + '20' }]}>
+        <MaterialCommunityIcon name="account" size={20} color={theme.colors.primary.teal} />
       </View>
     ) : (
-      <Animated.View 
-        style={[
-          styles.aiAvatar,
-          animate && { transform: [{ scale: pulseAnim }] }
-        ]}
+      <LinearGradient
+        colors={theme.colors.gradients.primary}
+        style={styles.aiAvatar}
       >
-        <LinearGradient
-          colors={colors.gradients.neonPrimary}
-          style={styles.avatarGradient}
-        >
-          <MaterialCommunityIcon name="robot" size={20} color={colors.dark.void} />
-        </LinearGradient>
-      </Animated.View>
+        <MaterialCommunityIcon name="robot" size={20} color={theme.colors.text.primary} />
+      </LinearGradient>
     );
-    
-    return avatarContent;
   };
 
   const renderMessage = (message: Message) => {
     const isUser = message.isUser;
     
     return (
-      <Animated.View
+      <View
         key={message.id}
         style={[
           styles.messageContainer,
-          isUser ? styles.userMessage : styles.aiMessage,
-          { opacity: fadeAnim }
+          isUser ? styles.userMessage : styles.aiMessage
         ]}
       >
-        {!isUser && <CyberAvatar isUser={false} animate={true} />}
+        {!isUser && <Avatar isUser={false} />}
         
-        <CyberCard
-          variant={isUser ? "neon" : "hologram"}
-          glowColor={isUser ? "cyan" : "magenta"}
+        <SeekerCard
+          variant={isUser ? "solid" : "gradient"}
           style={[
             styles.messageCard,
-            { maxWidth: width * 0.75 }
+            { maxWidth: width * 0.75 },
+            isUser ? { backgroundColor: theme.colors.primary.teal } : {}
           ]}
         >
-          {isUser ? (
-            <CyberText 
-              variant="body" 
-              color="primary"
-              style={styles.messageText}
-            >
-              {message.text}
-            </CyberText>
-          ) : (
-            <TerminalText style={styles.aiMessageText}>
-              {message.text}
-            </TerminalText>
-          )}
+          <SeekerText 
+            variant="body" 
+            color={isUser ? "primary" : "primary"}
+            style={styles.messageText}
+          >
+            {message.text}
+          </SeekerText>
           
           {message.type === 'insurance_offer' && message.insuranceData && (
-            <CyberCard variant="glass" style={styles.insuranceOffer}>
-              <GlitchText variant="h6" style={styles.insuranceTitle}>
-                >> INSURANCE PROTOCOL READY
-              </GlitchText>
-              <TerminalText>📍 ZONE: {message.insuranceData.location}</TerminalText>
-              <TerminalText>⏰ DURATION: {message.insuranceData.duration}</TerminalText>
-              <TerminalText>💰 PREMIUM: {message.insuranceData.price}</TerminalText>
-              <NeonButton
-                title="DEPLOY PROTOCOL"
+            <SeekerCard variant="outline" style={styles.insuranceOffer}>
+              <SeekerHeading level={3} style={styles.insuranceTitle}>
+                Insurance Quote Ready
+              </SeekerHeading>
+              <SeekerText variant="body" style={styles.insuranceDetail}>
+                📍 Location: {message.insuranceData.location}
+              </SeekerText>
+              <SeekerText variant="body" style={styles.insuranceDetail}>
+                ⏰ Duration: {message.insuranceData.duration}
+              </SeekerText>
+              <SeekerText variant="body" style={styles.insuranceDetail}>
+                💰 Premium: {message.insuranceData.price}
+              </SeekerText>
+              <SeekerButton
+                title="Get Coverage"
                 onPress={() => {}}
                 variant="primary"
-                size="small"
-                style={{ marginTop: spacing.space[3] }}
+                size="sm"
+                style={{ marginTop: 16 }}
               />
-            </CyberCard>
+            </SeekerCard>
           )}
-        </CyberCard>
+        </SeekerCard>
         
-        {isUser && <CyberAvatar isUser={true} />}
-      </Animated.View>
+        {isUser && <Avatar isUser={true} />}
+      </View>
     );
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.dark.void }]}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
       <LinearGradient
-        colors={[colors.dark.void, colors.dark.deep, colors.dark.void]}
+        colors={theme.colors.gradients.hero}
         style={StyleSheet.absoluteFill}
       />
       
@@ -223,31 +179,34 @@ export default function ChatScreen() {
         style={styles.keyboardContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* Cyberpunk Header with GPS Status */}
-        <CyberCard variant="glass" style={styles.headerCard}>
+        {/* Clean Header with Status */}
+        <SeekerCard variant="solid" style={styles.headerCard} elevated>
           <View style={styles.headerContent}>
-            <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+            <View style={[styles.statusIcon, { backgroundColor: theme.colors.status.success + '20' }]}>
               <MaterialCommunityIcon 
-                name="satellite-variant" 
+                name="map-marker-check" 
                 size={20} 
-                color={colors.neon.lime} 
-                style={styles.satelliteIcon}
+                color={theme.colors.status.success}
               />
-            </Animated.View>
+            </View>
             <View style={styles.locationInfo}>
-              <TerminalText style={styles.locationLabel}>GPS_LOCK: ACTIVE</TerminalText>
-              <NeonText neonColor="cyan" variant="caption">
-                COORDINATES: 37.5665°N 126.9780°E
-              </NeonText>
+              <SeekerText variant="body" color="primary" style={styles.locationLabel}>
+                Location Services Active
+              </SeekerText>
+              <SeekerText variant="caption" color="secondary">
+                Seoul, South Korea • GPS Ready
+              </SeekerText>
             </View>
             <View style={styles.statusIndicators}>
-              <View style={[styles.statusDot, { backgroundColor: colors.neon.lime }]} />
-              <TerminalText style={styles.statusText}>ONLINE</TerminalText>
+              <View style={[styles.statusDot, { backgroundColor: theme.colors.status.success }]} />
+              <SeekerText variant="caption" color="accent" style={styles.statusText}>
+                Online
+              </SeekerText>
             </View>
           </View>
-        </CyberCard>
+        </SeekerCard>
 
-        {/* Neural Chat Interface */}
+        {/* Chat Interface */}
         <ScrollView
           ref={scrollViewRef}
           style={styles.chatArea}
@@ -255,96 +214,67 @@ export default function ChatScreen() {
           onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
           showsVerticalScrollIndicator={false}
         >
-          {/* Neural network background pattern */}
-          <View style={styles.neuralBackground} />
           {messages.map(renderMessage)}
         </ScrollView>
 
-        {/* Cyber Protocol Quick Actions */}
+        {/* Quick Actions */}
         <View style={styles.quickActions}>
-          <CyberText variant="overline" color="tertiary" style={styles.quickActionLabel}>
-            >> QUICK PROTOCOLS
-          </CyberText>
+          <SeekerText variant="overline" color="tertiary" style={styles.quickActionLabel}>
+            Quick Actions
+          </SeekerText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {quickActions.map((action) => (
               <TouchableOpacity
                 key={action.id}
                 onPress={() => handleQuickAction(action)}
-                style={styles.protocolChip}
+                style={styles.actionChip}
               >
-                <LinearGradient
-                  colors={[`${colors.neon[action.neonColor]}20`, `${colors.neon[action.neonColor]}10`]}
-                  style={styles.chipGradient}
-                >
+                <View style={[styles.chipContent, { backgroundColor: theme.colors.background.elevated }]}>
                   <MaterialCommunityIcon 
                     name={action.icon} 
                     size={16} 
-                    color={colors.neon[action.neonColor]} 
+                    color={theme.colors.primary.teal} 
                   />
-                  <TerminalText style={[styles.chipText, { color: colors.neon[action.neonColor] }]}>
+                  <SeekerText variant="caption" color="primary" style={styles.chipText}>
                     {action.label}
-                  </TerminalText>
-                </LinearGradient>
+                  </SeekerText>
+                </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        {/* Cyberpunk Input Terminal */}
-        <CyberCard variant="neon" glowColor="cyan" style={styles.inputContainer}>
-          <View style={styles.terminalInput}>
-            <TerminalText style={styles.inputPrefix}>root@neural_net:~$ </TerminalText>
-            <PaperTextInput
-              mode="flat"
-              placeholder="Enter command..."
-              placeholderTextColor={colors.text.tertiary}
+        {/* Input Area */}
+        <SeekerCard variant="solid" style={styles.inputContainer} elevated>
+          <View style={styles.inputRow}>
+            <TextInput
+              placeholder="Type your message..."
+              placeholderTextColor={theme.colors.text.tertiary}
               value={inputText}
               onChangeText={setInputText}
-              style={styles.textInput}
-              theme={{
-                colors: {
-                  primary: colors.neon.cyan,
-                  text: colors.text.primary,
-                  placeholder: colors.text.tertiary,
-                  background: 'transparent',
-                }
-              }}
+              style={[styles.textInput, { color: theme.colors.text.primary }]}
               onSubmitEditing={handleSendMessage}
+              multiline
             />
             <TouchableOpacity 
               onPress={handleSendMessage}
               disabled={!inputText.trim()}
-              style={[styles.sendButton, { opacity: inputText.trim() ? 1 : 0.5 }]}
+              style={[
+                styles.sendButton, 
+                { 
+                  opacity: inputText.trim() ? 1 : 0.5,
+                  backgroundColor: theme.colors.primary.teal 
+                }
+              ]}
             >
-              <LinearGradient
-                colors={colors.gradients.neonPrimary}
-                style={styles.sendGradient}
-              >
-                <MaterialCommunityIcon 
-                  name="send" 
-                  size={20} 
-                  color={colors.dark.void} 
-                />
-              </LinearGradient>
+              <MaterialCommunityIcon 
+                name="send" 
+                size={20} 
+                color={theme.colors.text.primary} 
+              />
             </TouchableOpacity>
           </View>
-        </CyberCard>
-
-        {/* Neural Voice Input */}
-        <TouchableOpacity style={styles.voiceFab}>
-          <LinearGradient
-            colors={colors.gradients.electric}
-            style={styles.fabGradient}
-          >
-            <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
-              <MaterialCommunityIcon 
-                name="microphone" 
-                size={24} 
-                color={colors.dark.void} 
-              />
-            </Animated.View>
-          </LinearGradient>
-        </TouchableOpacity>
+        </SeekerCard>
       </KeyboardAvoidingView>
     </View>
   );
@@ -360,23 +290,30 @@ const styles = StyleSheet.create({
   
   // Header styles
   headerCard: {
-    margin: 12,
-    marginBottom: 8,
+    margin: 16,
+    marginBottom: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
   },
-  satelliteIcon: {
-    marginRight: 12,
+  statusIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
   },
   locationInfo: {
     flex: 1,
   },
   locationLabel: {
-    fontSize: 12,
-    letterSpacing: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
   },
   statusIndicators: {
     flexDirection: 'row',
@@ -386,28 +323,20 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginRight: 6,
+    marginRight: 8,
   },
   statusText: {
-    fontSize: 10,
+    fontSize: 12,
   },
   
   // Chat area styles
   chatArea: {
     flex: 1,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   chatContent: {
     paddingBottom: 20,
-    paddingTop: 10,
-  },
-  neuralBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 0.1,
+    paddingTop: 8,
   },
   
   // Message styles
@@ -423,15 +352,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   messageCard: {
-    flex: 1,
     marginHorizontal: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   messageText: {
     lineHeight: 20,
-  },
-  aiMessageText: {
-    lineHeight: 18,
-    fontSize: 13,
+    fontSize: 15,
   },
   
   // Avatar styles
@@ -439,9 +366,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(0, 255, 255, 0.1)',
-    borderWidth: 2,
-    borderColor: 'rgba(0, 255, 255, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -449,100 +373,78 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    overflow: 'hidden',
-  },
-  avatarGradient: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   
   // Insurance offer styles
   insuranceOffer: {
-    marginTop: 12,
+    marginTop: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   insuranceTitle: {
+    marginBottom: 12,
+  },
+  insuranceDetail: {
     marginBottom: 8,
+    fontSize: 14,
   },
   
   // Quick actions styles
   quickActions: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   quickActionLabel: {
-    marginBottom: 8,
+    marginBottom: 12,
     marginLeft: 4,
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
-  protocolChip: {
-    marginRight: 8,
+  actionChip: {
+    marginRight: 12,
     borderRadius: 20,
-    overflow: 'hidden',
   },
-  chipGradient: {
+  chipContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
   },
   chipText: {
-    marginLeft: 6,
-    fontSize: 11,
-    letterSpacing: 0.5,
+    marginLeft: 8,
+    fontSize: 13,
+    fontWeight: '500',
   },
   
   // Input styles
   inputContainer: {
-    margin: 12,
+    margin: 16,
     marginTop: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
-  terminalInput: {
+  inputRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  inputPrefix: {
-    fontSize: 14,
-    marginRight: 8,
+    alignItems: 'flex-end',
   },
   textInput: {
     flex: 1,
-    backgroundColor: 'transparent',
-    fontSize: 14,
-    fontFamily: 'Courier New',
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 0,
+    maxHeight: 100,
   },
   sendButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    overflow: 'hidden',
-    marginLeft: 8,
-  },
-  sendGradient: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  
-  // Voice FAB styles
-  voiceFab: {
-    position: 'absolute',
-    right: 20,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    overflow: 'hidden',
-    elevation: 8,
-    shadowColor: '#00FFFF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-  },
-  fabGradient: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginLeft: 12,
   },
 });

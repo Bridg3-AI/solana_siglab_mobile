@@ -1,23 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
-import { 
-  Switch, 
-  Portal,
-  Dialog,
-  RadioButton
-} from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import ClusterPickerFeature from "../components/cluster/cluster-picker-feature";
 import { 
-  CyberCard, 
-  NeonButton,
-  CyberText, 
-  NeonText,
-  TerminalText,
-  GlitchText,
-  useCyberpunkTheme 
-} from '../components/cyberpunk';
+  SeekerCard, 
+  SeekerButton,
+  SeekerText, 
+  SeekerHeading,
+  useSeekerTheme 
+} from '../components/seeker';
 
 export function SettingsScreen() {
   const [gpsEnabled, setGpsEnabled] = useState(true);
@@ -25,70 +17,10 @@ export function SettingsScreen() {
   const [autoInsurance, setAutoInsurance] = useState(false);
   const [batteryOptimization, setBatteryOptimization] = useState(true);
   const [locationAccuracy, setLocationAccuracy] = useState('high');
-  const [themeMode, setThemeMode] = useState('cyberpunk');
-  const [showThemeDialog, setShowThemeDialog] = useState(false);
-  const [showAccuracyDialog, setShowAccuracyDialog] = useState(false);
   
-  const { colors, spacing } = useCyberpunkTheme();
-  
-  // Animation refs
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scanAnim = useRef(new Animated.Value(0)).current;
+  const { theme } = useSeekerTheme();
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-
-    // Scanning animation
-    Animated.loop(
-      Animated.timing(scanAnim, {
-        toValue: 1,
-        duration: 3000,
-        useNativeDriver: true,
-      })
-    ).start();
-  }, []);
-
-  const handleWalletConnect = () => {
-    // 지갑 연결 로직
-  };
-
-  const handleBackup = () => {
-    // 데이터 백업 로직
-  };
-
-  const handleExportData = () => {
-    // 데이터 내보내기 로직
-  };
-
-  const CyberSwitch = ({ value, onValueChange, neonColor = 'cyan' }: {
-    value: boolean;
-    onValueChange: (value: boolean) => void;
-    neonColor?: 'cyan' | 'lime' | 'red';
-  }) => (
-    <TouchableOpacity 
-      onPress={() => onValueChange(!value)}
-      style={styles.cyberSwitch}
-    >
-      <LinearGradient
-        colors={value ? colors.gradients.neonPrimary : [colors.dark.shadow, colors.dark.deep]}
-        style={styles.switchGradient}
-      >
-        <View style={[
-          styles.switchIndicator,
-          {
-            backgroundColor: value ? colors.neon[neonColor] : colors.text.disabled,
-            shadowColor: value ? colors.neon[neonColor] : 'transparent',
-          }
-        ]} />
-      </LinearGradient>
-    </TouchableOpacity>
-  );
-
-  const TerminalListItem = ({ 
+  const SettingsItem = ({ 
     icon, 
     title, 
     description, 
@@ -96,45 +28,45 @@ export function SettingsScreen() {
     rightComponent,
     danger = false 
   }: {
-    icon: string;
+    icon: keyof typeof MaterialCommunityIcon.glyphMap;
     title: string;
     description?: string;
     onPress?: () => void;
     rightComponent?: React.ReactNode;
     danger?: boolean;
   }) => (
-    <TouchableOpacity onPress={onPress} style={styles.terminalItem}>
-      <View style={styles.terminalItemContent}>
-        <View style={styles.terminalIcon}>
+    <TouchableOpacity onPress={onPress} style={styles.settingsItem}>
+      <View style={styles.itemContent}>
+        <View style={[
+          styles.iconContainer, 
+          { backgroundColor: danger ? theme.colors.status.error + '20' : theme.colors.primary.teal + '20' }
+        ]}>
           <MaterialCommunityIcon 
-            name={icon as any} 
+            name={icon} 
             size={20} 
-            color={danger ? colors.neon.red : colors.neon.lime} 
+            color={danger ? theme.colors.status.error : theme.colors.primary.teal} 
           />
         </View>
-        <View style={styles.terminalText}>
-          <TerminalText style={[
-            styles.terminalTitle,
-            { color: danger ? colors.neon.red : colors.text.primary }
-          ]}>
+        <View style={styles.textContent}>
+          <SeekerText variant="body" color={danger ? "secondary" : "primary"} style={styles.itemTitle}>
             {title}
-          </TerminalText>
+          </SeekerText>
           {description && (
-            <CyberText variant="caption" color="tertiary" style={styles.terminalDescription}>
+            <SeekerText variant="caption" color="secondary" style={styles.itemDescription}>
               {description}
-            </CyberText>
+            </SeekerText>
           )}
         </View>
         {rightComponent && (
-          <View style={styles.terminalRight}>
+          <View style={styles.rightComponent}>
             {rightComponent}
           </View>
         )}
         {onPress && !rightComponent && (
           <MaterialCommunityIcon 
             name="chevron-right" 
-            size={16} 
-            color={colors.border.primary} 
+            size={20} 
+            color={theme.colors.text.tertiary} 
           />
         )}
       </View>
@@ -142,367 +74,271 @@ export function SettingsScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.dark.void }]}>
-      {/* Terminal Background Pattern */}
-      <View style={styles.terminalBackground}>
-        <LinearGradient
-          colors={[colors.dark.void, colors.dark.deep, colors.dark.void]}
-          style={StyleSheet.absoluteFill}
-        />
-        {/* Scanning line */}
-        <Animated.View
-          style={[
-            styles.scanLine,
-            {
-              backgroundColor: colors.neon.lime,
-              transform: [{
-                translateY: scanAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [-2, 800],
-                })
-              }]
-            }
-          ]}
-        />
-      </View>
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+      <LinearGradient
+        colors={theme.colors.gradients.hero}
+        style={StyleSheet.absoluteFill}
+      />
 
       <ScrollView 
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
       >
-        <Animated.View style={{ opacity: fadeAnim }}>
-          {/* Terminal Header */}
-          <CyberCard variant="glass" style={styles.headerCard}>
-            <View style={styles.terminalHeader}>
-              <GlitchText variant="h4" style={styles.terminalTitle}>
-                SYSTEM_CONFIG.exe
-              </GlitchText>
-              <TerminalText style={styles.terminalPath}>
-                root@neural_net:/config$
-              </TerminalText>
-            </View>
-          </CyberCard>
+        {/* Header */}
+        <View style={styles.header}>
+          <SeekerHeading level={1} style={styles.title}>
+            Settings
+          </SeekerHeading>
+          <SeekerText variant="body" color="secondary" style={styles.subtitle}>
+            Manage your account and app preferences
+          </SeekerText>
+        </View>
 
-          {/* User Profile Terminal */}
-          <CyberCard variant="neon" glowColor="cyan" style={styles.sectionCard}>
-            <View style={styles.profileSection}>
-              <View style={styles.profileHeader}>
-                <TerminalText style={styles.sectionLabel}>
-                  >> USER_PROFILE.sys
-                </TerminalText>
-              </View>
-              
-              <View style={styles.profileContent}>
-                {/* Holographic Avatar */}
-                <View style={styles.holoAvatar}>
-                  <LinearGradient
-                    colors={colors.gradients.hologram}
-                    style={styles.avatarGradient}
-                  >
-                    <MaterialCommunityIcon
-                      name="account-circle"
-                      size={48}
-                      color={colors.dark.void}
-                    />
-                  </LinearGradient>
-                  <View style={styles.avatarScan} />
-                </View>
-                
-                <View style={styles.profileInfo}>
-                  <NeonText neonColor="cyan" variant="h6">
-                    NEURAL_USER_001
-                  </NeonText>
-                  <TerminalText style={styles.profileStatus}>
-                    STATUS: WALLET_CONNECTED | ACCESS: AUTHORIZED
-                  </TerminalText>
-                </View>
-                
-                <NeonButton
-                  title="MANAGE"
-                  onPress={handleWalletConnect}
-                  variant="terminal"
-                  size="small"
-                />
-              </View>
+        {/* Profile Section */}
+        <SeekerCard variant="gradient" style={styles.profileCard} elevated>
+          <View style={styles.profileContent}>
+            <LinearGradient
+              colors={theme.colors.gradients.primary}
+              style={styles.avatar}
+            >
+              <MaterialCommunityIcon
+                name="account"
+                size={32}
+                color={theme.colors.text.primary}
+              />
+            </LinearGradient>
+            
+            <View style={styles.profileInfo}>
+              <SeekerHeading level={3} style={styles.profileName}>
+                Seeker User
+              </SeekerHeading>
+              <SeekerText variant="body" color="secondary" style={styles.profileStatus}>
+                Wallet connected • Ready for coverage
+              </SeekerText>
             </View>
-          </CyberCard>
+            
+            <SeekerButton
+              title="Manage"
+              variant="outline"
+              size="sm"
+              onPress={() => {}}
+            />
+          </View>
+        </SeekerCard>
 
-          {/* Blockchain Configuration */}
-          <CyberCard variant="glass" style={styles.sectionCard}>
-            <View style={styles.terminalSection}>
-              <TerminalText style={styles.sectionLabel}>
-                >> BLOCKCHAIN_CONFIG.net
-              </TerminalText>
-              <View style={styles.clusterWrapper}>
-                <ClusterPickerFeature />
-              </View>
-            </View>
-          </CyberCard>
+        {/* Blockchain Settings */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Blockchain
+            </SeekerText>
+          </View>
+          <View style={styles.clusterWrapper}>
+            <ClusterPickerFeature />
+          </View>
+        </SeekerCard>
 
-          {/* GPS & Location Configuration */}
-          <CyberCard variant="hologram" glowColor="lime" style={styles.sectionCard}>
-            <View style={styles.terminalSection}>
-              <TerminalText style={styles.sectionLabel}>
-                >> GPS_MATRIX.sys
-              </TerminalText>
-              
-              <TerminalListItem
-                icon="crosshairs-gps"
-                title="GPS_TRACKING_PROTOCOL"
-                description="GEOGRAPHIC RISK ASSESSMENT MODULE"
-                rightComponent={
-                  <CyberSwitch 
-                    value={gpsEnabled} 
-                    onValueChange={setGpsEnabled}
-                    neonColor="lime"
-                  />
-                }
+        {/* Location & GPS */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Location & GPS
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="crosshairs-gps"
+            title="GPS Tracking"
+            description="Enable location-based features"
+            rightComponent={
+              <Switch 
+                value={gpsEnabled} 
+                onValueChange={setGpsEnabled}
+                thumbColor={gpsEnabled ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-              
-              <TerminalListItem
-                icon="target"
-                title="LOCATION_ACCURACY"
-                description={`MODE: ${locationAccuracy.toUpperCase()}_PRECISION`}
-                onPress={() => setShowAccuracyDialog(true)}
+            }
+          />
+          
+          <SettingsItem
+            icon="target"
+            title="Location Accuracy"
+            description={`${locationAccuracy.charAt(0).toUpperCase() + locationAccuracy.slice(1)} precision mode`}
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="battery"
+            title="Battery Optimization"
+            description="Optimize GPS for battery life"
+            rightComponent={
+              <Switch 
+                value={batteryOptimization} 
+                onValueChange={setBatteryOptimization}
+                thumbColor={batteryOptimization ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-              
-              <TerminalListItem
-                icon="battery"
-                title="POWER_OPTIMIZATION"
-                description="BATTERY CONSERVATION PROTOCOL"
-                rightComponent={
-                  <CyberSwitch 
-                    value={batteryOptimization} 
-                    onValueChange={setBatteryOptimization}
-                    neonColor="lime"
-                  />
-                }
-              />
-            </View>
-          </CyberCard>
+            }
+          />
+        </SeekerCard>
 
-          {/* Insurance Protocol Configuration */}
-          <CyberCard variant="neon" glowColor="magenta" style={styles.sectionCard}>
-            <View style={styles.terminalSection}>
-              <TerminalText style={styles.sectionLabel}>
-                >> INSURANCE_PROTOCOL.exe
-              </TerminalText>
-              
-              <TerminalListItem
-                icon="shield-check"
-                title="AUTO_DEPLOYMENT"
-                description="LOCATION-BASED AUTONOMOUS INSURANCE"
-                rightComponent={
-                  <CyberSwitch 
-                    value={autoInsurance} 
-                    onValueChange={setAutoInsurance}
-                    neonColor="cyan"
-                  />
-                }
+        {/* Insurance Settings */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Insurance
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="shield-check"
+            title="Auto Insurance"
+            description="Automatically purchase coverage based on location"
+            rightComponent={
+              <Switch 
+                value={autoInsurance} 
+                onValueChange={setAutoInsurance}
+                thumbColor={autoInsurance ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-              
-              <TerminalListItem
-                icon="bell"
-                title="NOTIFICATION_SYSTEM"
-                description="INSURANCE ALERT PROTOCOL"
-                rightComponent={
-                  <CyberSwitch 
-                    value={notificationsEnabled} 
-                    onValueChange={setNotificationsEnabled}
-                    neonColor="cyan"
-                  />
-                }
+            }
+          />
+          
+          <SettingsItem
+            icon="bell"
+            title="Notifications"
+            description="Insurance alerts and updates"
+            rightComponent={
+              <Switch 
+                value={notificationsEnabled} 
+                onValueChange={setNotificationsEnabled}
+                thumbColor={notificationsEnabled ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-              
-              <TerminalListItem
-                icon="history"
-                title="COVERAGE_HISTORY"
-                description="ACTIVE POLICIES DATABASE"
-                onPress={() => {}}
-              />
-            </View>
-          </CyberCard>
+            }
+          />
+          
+          <SettingsItem
+            icon="history"
+            title="Coverage History"
+            description="View past and active policies"
+            onPress={() => {}}
+          />
+        </SeekerCard>
 
-          {/* System Configuration */}
-          <CyberCard variant="glass" style={styles.sectionCard}>
-            <View style={styles.terminalSection}>
-              <TerminalText style={styles.sectionLabel}>
-                >> SYSTEM_SETTINGS.cfg
-              </TerminalText>
-              
-              <TerminalListItem
-                icon="palette"
-                title="VISUAL_INTERFACE"
-                description="MODE: CYBERPUNK_ENHANCED"
-                onPress={() => setShowThemeDialog(true)}
+        {/* App Settings */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              App Settings
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="translate"
+            title="Language"
+            description="English"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="backup-restore"
+            title="Backup & Sync"
+            description="Cloud data synchronization"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="incognito"
+            title="Privacy Mode"
+            description="Enhanced location privacy"
+            rightComponent={
+              <Switch 
+                value={true} 
+                onValueChange={() => {}}
+                thumbColor={theme.colors.primary.teal}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-              
-              <TerminalListItem
-                icon="translate"
-                title="LANGUAGE_PROTOCOL"
-                description="LOCALE: KO_NEURAL"
-                onPress={() => {}}
-              />
-              
-              <TerminalListItem
-                icon="backup-restore"
-                title="DATA_BACKUP"
-                description="CLOUD SYNCHRONIZATION MODULE"
-                onPress={handleBackup}
-              />
-            </View>
-          </CyberCard>
+            }
+          />
+        </SeekerCard>
 
-          {/* Security & Privacy */}
-          <CyberCard variant="neon" glowColor="red" style={styles.sectionCard}>
-            <View style={styles.terminalSection}>
-              <TerminalText style={styles.sectionLabel}>
-                >> SECURITY_PROTOCOLS.sec
-              </TerminalText>
-              
-              <TerminalListItem
-                icon="incognito"
-                title="DATA_ANONYMIZATION"
-                description="LOCATION PRIVACY ENCRYPTION"
-                rightComponent={
-                  <CyberSwitch 
-                    value={true} 
-                    onValueChange={() => {}}
-                    neonColor="cyan"
-                  />
-                }
-              />
-              
-              <TerminalListItem
-                icon="download"
-                title="DATA_EXPORT"
-                description="NEURAL DATA EXTRACTION"
-                onPress={handleExportData}
-              />
-              
-              <View style={styles.dangerZone}>
-                <TerminalText style={styles.dangerLabel}>
-                  >> DANGER_ZONE.exe
-                </TerminalText>
-                <TerminalListItem
-                  icon="delete"
-                  title="ACCOUNT_TERMINATION"
-                  description="PERMANENT DATA PURGE PROTOCOL"
-                  onPress={() => {}}
-                  danger
-                />
-              </View>
-            </View>
-          </CyberCard>
+        {/* Support & Legal */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Support & Legal
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="help-circle"
+            title="Help & Support"
+            description="Get help and documentation"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="shield-account"
+            title="Privacy Policy"
+            description="How we protect your data"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="file-document"
+            title="Terms of Service"
+            description="Legal terms and conditions"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="information"
+            title="App Version"
+            description="v1.0.0 (Seeker)"
+          />
+        </SeekerCard>
 
-          {/* System Information */}
-          <CyberCard variant="glass" style={styles.sectionCard}>
-            <View style={styles.terminalSection}>
-              <TerminalText style={styles.sectionLabel}>
-                >> SYSTEM_INFO.log
-              </TerminalText>
-              
-              <TerminalListItem
-                icon="help-circle"
-                title="HELP_DOCUMENTATION"
-                description="USER MANUAL DATABASE"
-                onPress={() => {}}
-              />
-              
-              <TerminalListItem
-                icon="shield-account"
-                title="PRIVACY_POLICY"
-                description="DATA PROTECTION PROTOCOLS"
-                onPress={() => {}}
-              />
-              
-              <TerminalListItem
-                icon="file-document"
-                title="SERVICE_TERMS"
-                description="LEGAL FRAMEWORK DOCUMENTATION"
-                onPress={() => {}}
-              />
-              
-              <TerminalListItem
-                icon="information"
-                title="SYSTEM_VERSION"
-                description="BUILD: v1.0.0_NEURAL_ALPHA"
-              />
-            </View>
-          </CyberCard>
-        </Animated.View>
+        {/* Danger Zone */}
+        <SeekerCard variant="outline" style={styles.dangerCard}>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="secondary" style={styles.dangerTitle}>
+              Danger Zone
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="download"
+            title="Export Data"
+            description="Download your account data"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="delete"
+            title="Delete Account"
+            description="Permanently delete your account and data"
+            onPress={() => {}}
+            danger
+          />
+        </SeekerCard>
       </ScrollView>
-
-      {/* Cyberpunk Dialogs */}
-      <Portal>
-        <Dialog 
-          visible={showThemeDialog} 
-          onDismiss={() => setShowThemeDialog(false)}
-          style={styles.cyberDialog}
-        >
-          <View style={styles.dialogContent}>
-            <GlitchText variant="h6" style={styles.dialogTitle}>
-              VISUAL_INTERFACE_SELECT
-            </GlitchText>
-            <RadioButton.Group onValueChange={setThemeMode} value={themeMode}>
-              <View style={styles.radioOption}>
-                <RadioButton value="cyberpunk" color={colors.neon.cyan} />
-                <TerminalText style={styles.radioLabel}>CYBERPUNK_MODE</TerminalText>
-              </View>
-              <View style={styles.radioOption}>
-                <RadioButton value="matrix" color={colors.neon.lime} />
-                <TerminalText style={styles.radioLabel}>MATRIX_MODE</TerminalText>
-              </View>
-              <View style={styles.radioOption}>
-                <RadioButton value="neon" color={colors.neon.magenta} />
-                <TerminalText style={styles.radioLabel}>NEON_MODE</TerminalText>
-              </View>
-            </RadioButton.Group>
-            <NeonButton
-              title="EXECUTE"
-              onPress={() => setShowThemeDialog(false)}
-              variant="primary"
-              size="small"
-              style={styles.dialogButton}
-            />
-          </View>
-        </Dialog>
-      </Portal>
-
-      <Portal>
-        <Dialog 
-          visible={showAccuracyDialog} 
-          onDismiss={() => setShowAccuracyDialog(false)}
-          style={styles.cyberDialog}
-        >
-          <View style={styles.dialogContent}>
-            <GlitchText variant="h6" style={styles.dialogTitle}>
-              GPS_PRECISION_CONFIG
-            </GlitchText>
-            <RadioButton.Group onValueChange={setLocationAccuracy} value={locationAccuracy}>
-              <View style={styles.radioOption}>
-                <RadioButton value="high" color={colors.neon.lime} />
-                <TerminalText style={styles.radioLabel}>HIGH_PRECISION [POWER_DRAIN: MAX]</TerminalText>
-              </View>
-              <View style={styles.radioOption}>
-                <RadioButton value="medium" color={colors.neon.cyan} />
-                <TerminalText style={styles.radioLabel}>MEDIUM_PRECISION [POWER_DRAIN: MID]</TerminalText>
-              </View>
-              <View style={styles.radioOption}>
-                <RadioButton value="low" color={colors.neon.red} />
-                <TerminalText style={styles.radioLabel}>LOW_PRECISION [POWER_DRAIN: MIN]</TerminalText>
-              </View>
-            </RadioButton.Group>
-            <NeonButton
-              title="APPLY_CONFIG"
-              onPress={() => setShowAccuracyDialog(false)}
-              variant="terminal"
-              size="small"
-              style={styles.dialogButton}
-            />
-          </View>
-        </Dialog>
-      </Portal>
     </View>
   );
 }
@@ -511,153 +347,102 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  terminalBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  scanLine: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 2,
-    opacity: 0.7,
-  },
   scrollContainer: {
     flex: 1,
-    paddingHorizontal: 16,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
   },
   
   // Header styles
-  headerCard: {
-    marginTop: 20,
-    marginBottom: 16,
+  header: {
+    paddingTop: 20,
+    paddingBottom: 24,
   },
-  terminalHeader: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  terminalTitle: {
+  title: {
     marginBottom: 8,
-    textAlign: 'center',
   },
-  terminalPath: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
-  
-  // Section styles
-  sectionCard: {
-    marginBottom: 20,
-    overflow: 'hidden',
-  },
-  terminalSection: {
-    padding: 16,
-  },
-  sectionLabel: {
-    fontSize: 12,
-    marginBottom: 16,
-    letterSpacing: 1,
-    opacity: 0.8,
+  subtitle: {
+    fontSize: 16,
+    lineHeight: 22,
   },
   
   // Profile section
-  profileSection: {
-    padding: 16,
-  },
-  profileHeader: {
-    marginBottom: 16,
+  profileCard: {
+    marginBottom: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
   },
   profileContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  holoAvatar: {
-    position: 'relative',
+  avatar: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    overflow: 'hidden',
-    marginRight: 16,
-  },
-  avatarGradient: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  avatarScan: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: 'rgba(0, 255, 255, 0.8)',
+    marginRight: 20,
   },
   profileInfo: {
     flex: 1,
   },
+  profileName: {
+    marginBottom: 4,
+  },
   profileStatus: {
-    fontSize: 10,
-    marginTop: 4,
-    opacity: 0.8,
+    fontSize: 14,
   },
   
-  // Terminal list item styles
-  terminalItem: {
-    marginVertical: 2,
+  // Section styles
+  sectionCard: {
+    marginBottom: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
   },
-  terminalItemContent: {
+  sectionHeader: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  
+  // Settings item styles
+  settingsItem: {
+    marginVertical: 4,
+  },
+  itemContent: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
-  terminalIcon: {
-    width: 32,
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
-  terminalText: {
+  textContent: {
     flex: 1,
   },
-  terminalTitle: {
-    fontSize: 14,
-    letterSpacing: 0.5,
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: '500',
     marginBottom: 2,
   },
-  terminalDescription: {
-    fontSize: 11,
-    lineHeight: 14,
+  itemDescription: {
+    fontSize: 14,
+    lineHeight: 18,
   },
-  terminalRight: {
-    marginLeft: 12,
-  },
-  
-  // Cyber switch styles
-  cyberSwitch: {
-    width: 50,
-    height: 24,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  switchGradient: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 2,
-  },
-  switchIndicator: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 5,
+  rightComponent: {
+    marginLeft: 16,
   },
   
   // Cluster wrapper
@@ -666,48 +451,16 @@ const styles = StyleSheet.create({
   },
   
   // Danger zone
-  dangerZone: {
-    marginTop: 20,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 0, 64, 0.3)',
-  },
-  dangerLabel: {
-    fontSize: 12,
-    marginBottom: 12,
-    letterSpacing: 1,
-    color: '#FF0040',
-    opacity: 0.9,
-  },
-  
-  // Dialog styles
-  cyberDialog: {
-    backgroundColor: 'rgba(15, 15, 31, 0.95)',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 255, 255, 0.3)',
-  },
-  dialogContent: {
-    padding: 24,
-    backgroundColor: 'rgba(15, 15, 31, 0.9)',
-  },
-  dialogTitle: {
+  dangerCard: {
     marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    borderColor: 'rgba(255, 107, 107, 0.3)',
   },
-  radioOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-    paddingVertical: 4,
-  },
-  radioLabel: {
-    marginLeft: 12,
+  dangerTitle: {
     fontSize: 12,
-    letterSpacing: 0.5,
-  },
-  dialogButton: {
-    marginTop: 20,
-    alignSelf: 'center',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
 });

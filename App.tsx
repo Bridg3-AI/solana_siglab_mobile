@@ -14,27 +14,27 @@ import {
 } from "react-native-paper";
 import { AppNavigator } from "./src/navigators/AppNavigator";
 import { ClusterProvider } from "./src/components/cluster/cluster-data-access";
-import { CyberpunkThemeProvider, CyberpunkTheme } from "./src/components/cyberpunk";
+import { SeekerThemeProvider, SeekerTheme } from "./src/components/seeker";
 import { WalletProvider } from "./src/components/wallet";
 
 const queryClient = new QueryClient();
 
 export default function App() {
-  // Create cyberpunk navigation theme
+  // Create Seeker navigation theme
   const { DarkTheme } = adaptNavigationTheme({
     reactNavigationDark: NavigationDarkTheme,
   });
 
-  const CyberpunkNavigationTheme = {
+  const SeekerNavigationTheme = {
     ...DarkTheme,
     colors: {
       ...DarkTheme.colors,
-      primary: CyberpunkTheme.colors.primary,
-      background: CyberpunkTheme.colors.background,
-      card: CyberpunkTheme.colors.surface,
-      text: CyberpunkTheme.colors.onBackground,
-      border: CyberpunkTheme.colors.outline,
-      notification: CyberpunkTheme.colors.error,
+      primary: SeekerTheme.colors.primary.teal,
+      background: SeekerTheme.colors.background.primary,
+      card: SeekerTheme.colors.background.surface,
+      text: SeekerTheme.colors.text.primary,
+      border: SeekerTheme.colors.border.subtle,
+      notification: SeekerTheme.colors.status.error,
     },
   };
 
@@ -43,18 +43,18 @@ export default function App() {
       <ClusterProvider>
         <ConnectionProvider config={{ commitment: "processed" }}>
           <WalletProvider>
-            <CyberpunkThemeProvider>
+            <SeekerThemeProvider>
               <SafeAreaView
                 style={[
                   styles.shell,
                   {
-                    backgroundColor: CyberpunkTheme.colors.background,
+                    backgroundColor: SeekerTheme.colors.background.primary,
                   },
                 ]}
               >
-                <AppNavigator theme={CyberpunkNavigationTheme} />
+                <AppNavigator theme={SeekerNavigationTheme} />
               </SafeAreaView>
-            </CyberpunkThemeProvider>
+            </SeekerThemeProvider>
           </WalletProvider>
         </ConnectionProvider>
       </ClusterProvider>

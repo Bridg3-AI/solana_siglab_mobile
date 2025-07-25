@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { 
-  Text, 
-  Card, 
-  Switch, 
-  List, 
-  Divider, 
-  Button,
-  useTheme,
-  Avatar,
-  Portal,
-  Dialog,
-  RadioButton
-} from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import ClusterPickerFeature from "../components/cluster/cluster-picker-feature";
+import { 
+  SeekerCard, 
+  SeekerButton,
+  SeekerText, 
+  SeekerHeading,
+  useSeekerTheme 
+} from '../components/seeker';
 
 export function SettingsScreen() {
   const [gpsEnabled, setGpsEnabled] = useState(true);
@@ -22,295 +17,450 @@ export function SettingsScreen() {
   const [autoInsurance, setAutoInsurance] = useState(false);
   const [batteryOptimization, setBatteryOptimization] = useState(true);
   const [locationAccuracy, setLocationAccuracy] = useState('high');
-  const [themeMode, setThemeMode] = useState('system');
-  const [showThemeDialog, setShowThemeDialog] = useState(false);
-  const [showAccuracyDialog, setShowAccuracyDialog] = useState(false);
   
-  const theme = useTheme();
+  const { theme } = useSeekerTheme();
 
-  const handleWalletConnect = () => {
-    // 지갑 연결 로직
-  };
-
-  const handleBackup = () => {
-    // 데이터 백업 로직
-  };
-
-  const handleExportData = () => {
-    // 데이터 내보내기 로직
-  };
+  const SettingsItem = ({ 
+    icon, 
+    title, 
+    description, 
+    onPress, 
+    rightComponent,
+    danger = false 
+  }: {
+    icon: keyof typeof MaterialCommunityIcon.glyphMap;
+    title: string;
+    description?: string;
+    onPress?: () => void;
+    rightComponent?: React.ReactNode;
+    danger?: boolean;
+  }) => (
+    <TouchableOpacity onPress={onPress} style={styles.settingsItem}>
+      <View style={styles.itemContent}>
+        <View style={[
+          styles.iconContainer, 
+          { backgroundColor: danger ? theme.colors.status.error + '20' : theme.colors.primary.teal + '20' }
+        ]}>
+          <MaterialCommunityIcon 
+            name={icon} 
+            size={20} 
+            color={danger ? theme.colors.status.error : theme.colors.primary.teal} 
+          />
+        </View>
+        <View style={styles.textContent}>
+          <SeekerText variant="body" color={danger ? "secondary" : "primary"} style={styles.itemTitle}>
+            {title}
+          </SeekerText>
+          {description && (
+            <SeekerText variant="caption" color="secondary" style={styles.itemDescription}>
+              {description}
+            </SeekerText>
+          )}
+        </View>
+        {rightComponent && (
+          <View style={styles.rightComponent}>
+            {rightComponent}
+          </View>
+        )}
+        {onPress && !rightComponent && (
+          <MaterialCommunityIcon 
+            name="chevron-right" 
+            size={20} 
+            color={theme.colors.text.tertiary} 
+          />
+        )}
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
-    <ScrollView style={styles.container}>
-      {/* 프로필 섹션 */}
-      <Card style={styles.profileCard}>
-        <Card.Content style={styles.profileContent}>
-          <Avatar.Icon size={60} icon="account" />
-          <View style={styles.profileInfo}>
-            <Text variant="titleLarge">사용자</Text>
-            <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-              지갑 연결됨
-            </Text>
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+      <LinearGradient
+        colors={theme.colors.gradients.hero}
+        style={StyleSheet.absoluteFill}
+      />
+
+      <ScrollView 
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <SeekerHeading level={1} style={styles.title}>
+            Settings
+          </SeekerHeading>
+          <SeekerText variant="body" color="secondary" style={styles.subtitle}>
+            Manage your account and app preferences
+          </SeekerText>
+        </View>
+
+        {/* Profile Section */}
+        <SeekerCard variant="gradient" style={styles.profileCard} elevated>
+          <View style={styles.profileContent}>
+            <LinearGradient
+              colors={theme.colors.gradients.primary}
+              style={styles.avatar}
+            >
+              <MaterialCommunityIcon
+                name="account"
+                size={32}
+                color={theme.colors.text.primary}
+              />
+            </LinearGradient>
+            
+            <View style={styles.profileInfo}>
+              <SeekerHeading level={3} style={styles.profileName}>
+                Seeker User
+              </SeekerHeading>
+              <SeekerText variant="body" color="secondary" style={styles.profileStatus}>
+                Wallet connected • Ready for coverage
+              </SeekerText>
+            </View>
+            
+            <SeekerButton
+              title="Manage"
+              variant="outline"
+              size="sm"
+              onPress={() => {}}
+            />
           </View>
-          <Button mode="outlined" onPress={handleWalletConnect}>
-            지갑 관리
-          </Button>
-        </Card.Content>
-      </Card>
+        </SeekerCard>
 
-      {/* Solana 클러스터 설정 */}
-      <Card style={styles.sectionCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            블록체인 설정
-          </Text>
-          <ClusterPickerFeature />
-        </Card.Content>
-      </Card>
+        {/* Blockchain Settings */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Blockchain
+            </SeekerText>
+          </View>
+          <View style={styles.clusterWrapper}>
+            <ClusterPickerFeature />
+          </View>
+        </SeekerCard>
 
-      {/* GPS 및 위치 설정 */}
-      <Card style={styles.sectionCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            위치 및 GPS 설정
-          </Text>
+        {/* Location & GPS */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Location & GPS
+            </SeekerText>
+          </View>
           
-          <List.Item
-            title="GPS 추적 활성화"
-            description="보험 지역 감지를 위한 GPS 사용"
-            left={props => <List.Icon {...props} icon="crosshairs-gps" />}
-            right={() => (
+          <SettingsItem
+            icon="crosshairs-gps"
+            title="GPS Tracking"
+            description="Enable location-based features"
+            rightComponent={
               <Switch 
                 value={gpsEnabled} 
                 onValueChange={setGpsEnabled}
+                thumbColor={gpsEnabled ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-            )}
+            }
           />
           
-          <List.Item
-            title="위치 정확도"
-            description={`현재: ${locationAccuracy === 'high' ? '높음' : locationAccuracy === 'medium' ? '중간' : '낮음'}`}
-            left={props => <List.Icon {...props} icon="target" />}
-            onPress={() => setShowAccuracyDialog(true)}
+          <SettingsItem
+            icon="target"
+            title="Location Accuracy"
+            description={`${locationAccuracy.charAt(0).toUpperCase() + locationAccuracy.slice(1)} precision mode`}
+            onPress={() => {}}
           />
           
-          <List.Item
-            title="배터리 최적화"
-            description="배터리 절약을 위한 GPS 사용량 조절"
-            left={props => <List.Icon {...props} icon="battery" />}
-            right={() => (
+          <SettingsItem
+            icon="battery"
+            title="Battery Optimization"
+            description="Optimize GPS for battery life"
+            rightComponent={
               <Switch 
                 value={batteryOptimization} 
                 onValueChange={setBatteryOptimization}
+                thumbColor={batteryOptimization ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-            )}
+            }
           />
-        </Card.Content>
-      </Card>
+        </SeekerCard>
 
-      {/* 보험 설정 */}
-      <Card style={styles.sectionCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            보험 설정
-          </Text>
+        {/* Insurance Settings */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Insurance
+            </SeekerText>
+          </View>
           
-          <List.Item
-            title="자동 보험 가입"
-            description="위치 기반 자동 보험 추천 및 가입"
-            left={props => <List.Icon {...props} icon="shield-check" />}
-            right={() => (
+          <SettingsItem
+            icon="shield-check"
+            title="Auto Insurance"
+            description="Automatically purchase coverage based on location"
+            rightComponent={
               <Switch 
                 value={autoInsurance} 
                 onValueChange={setAutoInsurance}
+                thumbColor={autoInsurance ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-            )}
+            }
           />
           
-          <List.Item
-            title="알림 설정"
-            description="보험 관련 알림 받기"
-            left={props => <List.Icon {...props} icon="bell" />}
-            right={() => (
+          <SettingsItem
+            icon="bell"
+            title="Notifications"
+            description="Insurance alerts and updates"
+            rightComponent={
               <Switch 
                 value={notificationsEnabled} 
                 onValueChange={setNotificationsEnabled}
+                thumbColor={notificationsEnabled ? theme.colors.primary.teal : theme.colors.text.disabled}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-            )}
+            }
           />
           
-          <List.Item
-            title="보험 내역"
-            description="가입한 보험 목록 및 상태"
-            left={props => <List.Icon {...props} icon="history" />}
+          <SettingsItem
+            icon="history"
+            title="Coverage History"
+            description="View past and active policies"
             onPress={() => {}}
           />
-        </Card.Content>
-      </Card>
+        </SeekerCard>
 
-      {/* 앱 설정 */}
-      <Card style={styles.sectionCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            앱 설정
-          </Text>
+        {/* App Settings */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              App Settings
+            </SeekerText>
+          </View>
           
-          <List.Item
-            title="테마"
-            description={`현재: ${themeMode === 'system' ? '시스템 설정' : themeMode === 'light' ? '라이트' : '다크'}`}
-            left={props => <List.Icon {...props} icon="palette" />}
-            onPress={() => setShowThemeDialog(true)}
-          />
-          
-          <List.Item
-            title="언어"
-            description="한국어"
-            left={props => <List.Icon {...props} icon="translate" />}
+          <SettingsItem
+            icon="translate"
+            title="Language"
+            description="English"
             onPress={() => {}}
           />
           
-          <List.Item
-            title="데이터 백업"
-            description="클라우드에 데이터 백업"
-            left={props => <List.Icon {...props} icon="backup-restore" />}
-            onPress={handleBackup}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* 개인정보 및 보안 */}
-      <Card style={styles.sectionCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            개인정보 및 보안
-          </Text>
-          
-          <List.Item
-            title="위치 데이터 익명화"
-            description="위치 정보를 익명으로 저장"
-            left={props => <List.Icon {...props} icon="incognito" />}
-            right={() => <Switch value={true} onValueChange={() => {}} />}
-          />
-          
-          <List.Item
-            title="데이터 내보내기"
-            description="내 데이터 다운로드"
-            left={props => <List.Icon {...props} icon="download" />}
-            onPress={handleExportData}
-          />
-          
-          <List.Item
-            title="계정 삭제"
-            description="모든 데이터 영구 삭제"
-            left={props => <List.Icon {...props} icon="delete" />}
-            onPress={() => {}}
-            titleStyle={{ color: theme.colors.error }}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* 정보 */}
-      <Card style={styles.sectionCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            정보
-          </Text>
-          
-          <List.Item
-            title="도움말"
-            left={props => <List.Icon {...props} icon="help-circle" />}
+          <SettingsItem
+            icon="backup-restore"
+            title="Backup & Sync"
+            description="Cloud data synchronization"
             onPress={() => {}}
           />
           
-          <List.Item
-            title="개인정보처리방침"
-            left={props => <List.Icon {...props} icon="shield-account" />}
-            onPress={() => {}}
-          />
-          
-          <List.Item
-            title="서비스 약관"
-            left={props => <List.Icon {...props} icon="file-document" />}
-            onPress={() => {}}
-          />
-          
-          <List.Item
-            title="앱 버전"
-            description="1.0.0"
-            left={props => <List.Icon {...props} icon="information" />}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* 테마 선택 다이얼로그 */}
-      <Portal>
-        <Dialog visible={showThemeDialog} onDismiss={() => setShowThemeDialog(false)}>
-          <Dialog.Title>테마 선택</Dialog.Title>
-          <Dialog.Content>
-            <RadioButton.Group onValueChange={setThemeMode} value={themeMode}>
-              <RadioButton.Item label="시스템 설정" value="system" />
-              <RadioButton.Item label="라이트 모드" value="light" />
-              <RadioButton.Item label="다크 모드" value="dark" />
-            </RadioButton.Group>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setShowThemeDialog(false)}>확인</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-
-      {/* 위치 정확도 다이얼로그 */}
-      <Portal>
-        <Dialog visible={showAccuracyDialog} onDismiss={() => setShowAccuracyDialog(false)}>
-          <Dialog.Title>위치 정확도</Dialog.Title>
-          <Dialog.Content>
-            <RadioButton.Group onValueChange={setLocationAccuracy} value={locationAccuracy}>
-              <RadioButton.Item 
-                label="높음 (배터리 소모 많음)" 
-                value="high" 
+          <SettingsItem
+            icon="incognito"
+            title="Privacy Mode"
+            description="Enhanced location privacy"
+            rightComponent={
+              <Switch 
+                value={true} 
+                onValueChange={() => {}}
+                thumbColor={theme.colors.primary.teal}
+                trackColor={{ 
+                  false: theme.colors.background.tertiary, 
+                  true: theme.colors.primary.teal + '40' 
+                }}
               />
-              <RadioButton.Item 
-                label="중간 (균형)" 
-                value="medium" 
-              />
-              <RadioButton.Item 
-                label="낮음 (배터리 절약)" 
-                value="low" 
-              />
-            </RadioButton.Group>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setShowAccuracyDialog(false)}>확인</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-    </ScrollView>
+            }
+          />
+        </SeekerCard>
+
+        {/* Support & Legal */}
+        <SeekerCard variant="solid" style={styles.sectionCard} elevated>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="tertiary" style={styles.sectionTitle}>
+              Support & Legal
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="help-circle"
+            title="Help & Support"
+            description="Get help and documentation"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="shield-account"
+            title="Privacy Policy"
+            description="How we protect your data"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="file-document"
+            title="Terms of Service"
+            description="Legal terms and conditions"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="information"
+            title="App Version"
+            description="v1.0.0 (Seeker)"
+          />
+        </SeekerCard>
+
+        {/* Danger Zone */}
+        <SeekerCard variant="outline" style={styles.dangerCard}>
+          <View style={styles.sectionHeader}>
+            <SeekerText variant="overline" color="secondary" style={styles.dangerTitle}>
+              Danger Zone
+            </SeekerText>
+          </View>
+          
+          <SettingsItem
+            icon="download"
+            title="Export Data"
+            description="Download your account data"
+            onPress={() => {}}
+          />
+          
+          <SettingsItem
+            icon="delete"
+            title="Delete Account"
+            description="Permanently delete your account and data"
+            onPress={() => {}}
+            danger
+          />
+        </SeekerCard>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
   },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  
+  // Header styles
+  header: {
+    paddingTop: 20,
+    paddingBottom: 24,
+  },
+  title: {
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  
+  // Profile section
   profileCard: {
-    marginBottom: 15,
-    elevation: 2,
+    marginBottom: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
   },
   profileContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+  },
   profileInfo: {
     flex: 1,
-    marginLeft: 15,
   },
+  profileName: {
+    marginBottom: 4,
+  },
+  profileStatus: {
+    fontSize: 14,
+  },
+  
+  // Section styles
   sectionCard: {
-    marginBottom: 15,
-    elevation: 1,
+    marginBottom: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+  },
+  sectionHeader: {
+    marginBottom: 16,
   },
   sectionTitle: {
-    marginBottom: 10,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  
+  // Settings item styles
+  settingsItem: {
+    marginVertical: 4,
+  },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  textContent: {
+    flex: 1,
+  },
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  itemDescription: {
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  rightComponent: {
+    marginLeft: 16,
+  },
+  
+  // Cluster wrapper
+  clusterWrapper: {
+    marginTop: 8,
+  },
+  
+  // Danger zone
+  dangerCard: {
+    marginBottom: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    borderColor: 'rgba(255, 107, 107, 0.3)',
+  },
+  dangerTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
 });

@@ -1,17 +1,22 @@
-import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol";
-import { useState, useCallback } from "react";
-import { Button } from "react-native-paper";
+import React, { useState, useCallback } from "react";
 import { alertAndLog } from "../../utils/alertAndLog";
+import { useWallet } from "../wallet";
 import { useAuthorization } from "../../utils/useAuthorization";
 import { useMobileWallet } from "../../utils/useMobileWallet";
+import {
+  SeekerText,
+  SeekerButton,
+  useSeekerTheme
+} from '../seeker';
 
 export function ConnectButton() {
-  const { authorizeSession } = useAuthorization();
-  const { connect } = useMobileWallet();
+  const { theme } = useSeekerTheme();
+  const { connect, isConnecting, isConnected, account, platform } = useWallet();
   const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
+  
   const handleConnectPress = useCallback(async () => {
     try {
-      if (authorizationInProgress) {
+      if (authorizationInProgress || isConnecting) {
         return;
       }
       setAuthorizationInProgress(true);
@@ -24,33 +29,42 @@ export function ConnectButton() {
     } finally {
       setAuthorizationInProgress(false);
     }
-  }, [authorizationInProgress, authorizeSession]);
+  }, [authorizationInProgress, connect]);
+  
+  const getButtonTitle = () => {
+    if (authorizationInProgress || isConnecting) return 'Connecting...';
+    if (isConnected) return `Connected (${platform})`;
+    return 'Connect Wallet';
+  };
+  
   return (
-    <Button
-      mode="contained"
-      disabled={authorizationInProgress}
+    <SeekerButton
+      title={getButtonTitle()}
       onPress={handleConnectPress}
+      disabled={authorizationInProgress || isConnecting}
+      variant="primary"
+      size="md"
       style={{ flex: 1 }}
-    >
-      Connect
-    </Button>
+    />
   );
 }
 
 export function SignInButton() {
+  const { theme } = useSeekerTheme();
   const { authorizeSession } = useAuthorization();
   const { signIn } = useMobileWallet();
   const [signInInProgress, setSignInInProgress] = useState(false);
-  const handleConnectPress = useCallback(async () => {
+  
+  const handleSignInPress = useCallback(async () => {
     try {
       if (signInInProgress) {
         return;
       }
       setSignInInProgress(true);
       await signIn({
-        domain: "yourdomain.com",
-        statement: "Sign into Expo Template App",
-        uri: "https://yourdomain.com",
+        domain: "seeker-insurance.app",
+        statement: "Sign in to Seeker for secure GPS-based insurance access",
+        uri: "https://seeker-insurance.app",
       });
     } catch (err: any) {
       alertAndLog(
@@ -61,14 +75,20 @@ export function SignInButton() {
       setSignInInProgress(false);
     }
   }, [signInInProgress, authorizeSession]);
+  
+  const getButtonTitle = () => {
+    if (signInInProgress) return 'Signing In...';
+    return 'Sign In';
+  };
+  
   return (
-    <Button
-      mode="outlined"
+    <SeekerButton
+      title={getButtonTitle()}
+      onPress={handleSignInPress}
       disabled={signInInProgress}
-      onPress={handleConnectPress}
-      style={{ marginLeft: 4, flex: 1 }}
-    >
-      Sign in
-    </Button>
+      variant="secondary"
+      size="md"
+      style={{ flex: 1 }}
+    />
   );
 }

@@ -1,16 +1,14 @@
 import React, { useState, useRef } from 'react';
-import { View, StyleSheet, ScrollView, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
-import { 
-  Text, 
-  Card, 
-  Button, 
-  TextInput, 
-  FAB, 
-  useTheme, 
-  Chip,
-  Avatar
-} from 'react-native-paper';
+import { View, StyleSheet, ScrollView, Dimensions, KeyboardAvoidingView, Platform, TouchableOpacity, TextInput } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
+import { 
+  SeekerCard, 
+  SeekerButton, 
+  SeekerText, 
+  SeekerHeading,
+  useSeekerTheme 
+} from '../components/seeker';
 
 const { width } = Dimensions.get('window');
 
@@ -29,23 +27,23 @@ interface Message {
 }
 
 const quickActions = [
-  { id: '1', label: '여행 보험', icon: 'airplane' },
-  { id: '2', label: '페스티벌 보험', icon: 'music' },
-  { id: '3', label: '등산 보험', icon: 'mountain' },
-  { id: '4', label: '현재 위치 보험', icon: 'map-marker' },
+  { id: '1', label: 'Travel Insurance', icon: 'airplane' as const },
+  { id: '2', label: 'Event Coverage', icon: 'calendar-star' as const },
+  { id: '3', label: 'Adventure Sports', icon: 'hiking' as const },
+  { id: '4', label: 'GPS Coverage', icon: 'map-marker-radius' as const },
 ];
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: '안녕하세요! GPS 기반 AI 보험 에이전트입니다. 어떤 보험이 필요하신가요?',
+      text: 'Hello! I\'m your Seeker AI insurance assistant. I\'m here to help you find the perfect GPS-based coverage for your activities.\n\nWhat kind of insurance are you looking for today?',
       isUser: false,
       timestamp: new Date(),
     },
   ]);
   const [inputText, setInputText] = useState('');
-  const theme = useTheme();
+  const { theme } = useSeekerTheme();
   const scrollViewRef = useRef<ScrollView>(null);
 
   const handleSendMessage = () => {
@@ -60,15 +58,16 @@ export default function ChatScreen() {
       setMessages(prev => [...prev, newMessage]);
       setInputText('');
       
-      // AI 응답 시뮬레이션
+      // AI response simulation - Clean professional style
       setTimeout(() => {
         const aiResponse: Message = {
           id: (Date.now() + 1).toString(),
-          text: '위치를 확인하고 있습니다. 잠시만 기다려주세요...',
+          text: 'I understand you\'re interested in that coverage. Let me check your location and provide personalized insurance options based on your GPS data.\n\nI\'ll analyze the risk factors for your area and suggest the best coverage plans.',
           isUser: false,
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, aiResponse]);
+        scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 1000);
     }
   };
@@ -76,151 +75,208 @@ export default function ChatScreen() {
   const handleQuickAction = (action: typeof quickActions[0]) => {
     const message: Message = {
       id: Date.now().toString(),
-      text: `${action.label} 추천해주세요`,
+      text: `I'm interested in ${action.label}`,
       isUser: true,
       timestamp: new Date(),
     };
     setMessages(prev => [...prev, message]);
+    
+    // AI response for quick action
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: `Great choice! ${action.label} is perfect for your needs. I can help you set up coverage that automatically activates based on your location.\n\nWould you like me to show you available plans in your area?`,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, aiResponse]);
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 1500);
+  };
+
+  const Avatar = ({ isUser }: { isUser: boolean }) => {
+    return isUser ? (
+      <View style={[styles.userAvatar, { backgroundColor: theme.colors.primary.teal + '20' }]}>
+        <MaterialCommunityIcon name="account" size={20} color={theme.colors.primary.teal} />
+      </View>
+    ) : (
+      <LinearGradient
+        colors={theme.colors.gradients.primary}
+        style={styles.aiAvatar}
+      >
+        <MaterialCommunityIcon name="robot" size={20} color={theme.colors.text.primary} />
+      </LinearGradient>
+    );
   };
 
   const renderMessage = (message: Message) => {
+    const isUser = message.isUser;
+    
     return (
       <View
         key={message.id}
         style={[
           styles.messageContainer,
-          message.isUser ? styles.userMessage : styles.aiMessage,
+          isUser ? styles.userMessage : styles.aiMessage
         ]}
       >
-        {!message.isUser && (
-          <Avatar.Icon
-            size={32}
-            icon="robot"
-            style={[styles.avatar, { backgroundColor: theme.colors.primaryContainer }]}
-          />
-        )}
+        {!isUser && <Avatar isUser={false} />}
         
-        <Card
+        <SeekerCard
+          variant={isUser ? "solid" : "gradient"}
           style={[
             styles.messageCard,
-            {
-              backgroundColor: message.isUser 
-                ? theme.colors.primary 
-                : theme.colors.surface,
-            },
+            { maxWidth: width * 0.75 },
+            isUser ? { backgroundColor: theme.colors.primary.teal } : {}
           ]}
         >
-          <Card.Content style={styles.messageContent}>
-            <Text
-              style={{
-                color: message.isUser 
-                  ? theme.colors.onPrimary 
-                  : theme.colors.onSurface,
-              }}
-            >
-              {message.text}
-            </Text>
-            
-            {message.type === 'insurance_offer' && message.insuranceData && (
-              <View style={styles.insuranceOffer}>
-                <Text variant="titleSmall" style={{ marginTop: 10, marginBottom: 5 }}>
-                  추천 보험
-                </Text>
-                <Text>📍 {message.insuranceData.location}</Text>
-                <Text>⏰ {message.insuranceData.duration}</Text>
-                <Text>💰 {message.insuranceData.price}</Text>
-                <Button mode="contained" style={{ marginTop: 10 }}>
-                  가입하기
-                </Button>
-              </View>
-            )}
-          </Card.Content>
-        </Card>
+          <SeekerText 
+            variant="body" 
+            color={isUser ? "primary" : "primary"}
+            style={styles.messageText}
+          >
+            {message.text}
+          </SeekerText>
+          
+          {message.type === 'insurance_offer' && message.insuranceData && (
+            <SeekerCard variant="outline" style={styles.insuranceOffer}>
+              <SeekerHeading level={3} style={styles.insuranceTitle}>
+                Insurance Quote Ready
+              </SeekerHeading>
+              <SeekerText variant="body" style={styles.insuranceDetail}>
+                📍 Location: {message.insuranceData.location}
+              </SeekerText>
+              <SeekerText variant="body" style={styles.insuranceDetail}>
+                ⏰ Duration: {message.insuranceData.duration}
+              </SeekerText>
+              <SeekerText variant="body" style={styles.insuranceDetail}>
+                💰 Premium: {message.insuranceData.price}
+              </SeekerText>
+              <SeekerButton
+                title="Get Coverage"
+                onPress={() => {}}
+                variant="primary"
+                size="sm"
+                style={{ marginTop: 16 }}
+              />
+            </SeekerCard>
+          )}
+        </SeekerCard>
         
-        {message.isUser && (
-          <Avatar.Icon
-            size={32}
-            icon="account"
-            style={[styles.avatar, { backgroundColor: theme.colors.secondary }]}
-          />
-        )}
+        {isUser && <Avatar isUser={true} />}
       </View>
     );
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      {/* 현재 위치 표시 */}
-      <Card style={[styles.locationCard, { backgroundColor: theme.colors.surfaceVariant }]}>
-        <Card.Content style={styles.locationContent}>
-          <MaterialCommunityIcon 
-            name="map-marker" 
-            size={16} 
-            color={theme.colors.primary} 
-          />
-          <Text variant="bodySmall" style={{ marginLeft: 5 }}>
-            현재 위치: 서울시 강남구
-          </Text>
-        </Card.Content>
-      </Card>
-
-      {/* 채팅 영역 */}
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.chatArea}
-        contentContainerStyle={styles.chatContent}
-        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+      <LinearGradient
+        colors={theme.colors.gradients.hero}
+        style={StyleSheet.absoluteFill}
+      />
+      
+      <KeyboardAvoidingView 
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {messages.map(renderMessage)}
-      </ScrollView>
+        {/* Clean Header with Status */}
+        <SeekerCard variant="solid" style={styles.headerCard} elevated>
+          <View style={styles.headerContent}>
+            <View style={[styles.statusIcon, { backgroundColor: theme.colors.status.success + '20' }]}>
+              <MaterialCommunityIcon 
+                name="map-marker-check" 
+                size={20} 
+                color={theme.colors.status.success}
+              />
+            </View>
+            <View style={styles.locationInfo}>
+              <SeekerText variant="body" color="primary" style={styles.locationLabel}>
+                Location Services Active
+              </SeekerText>
+              <SeekerText variant="caption" color="secondary">
+                Seoul, South Korea • GPS Ready
+              </SeekerText>
+            </View>
+            <View style={styles.statusIndicators}>
+              <View style={[styles.statusDot, { backgroundColor: theme.colors.status.success }]} />
+              <SeekerText variant="caption" color="accent" style={styles.statusText}>
+                Online
+              </SeekerText>
+            </View>
+          </View>
+        </SeekerCard>
 
-      {/* 퀵 액션 버튼들 */}
-      <View style={styles.quickActions}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {quickActions.map((action) => (
-            <Chip
-              key={action.id}
-              icon={action.icon}
-              onPress={() => handleQuickAction(action)}
-              style={[styles.quickActionChip, { backgroundColor: theme.colors.secondaryContainer }]}
-            >
-              {action.label}
-            </Chip>
-          ))}
+        {/* Chat Interface */}
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.chatArea}
+          contentContainerStyle={styles.chatContent}
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+          showsVerticalScrollIndicator={false}
+        >
+          {messages.map(renderMessage)}
         </ScrollView>
-      </View>
 
-      {/* 입력 영역 */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          mode="outlined"
-          placeholder="메시지를 입력하세요..."
-          value={inputText}
-          onChangeText={setInputText}
-          style={styles.textInput}
-          right={
-            <TextInput.Icon
-              icon="send"
+        {/* Quick Actions */}
+        <View style={styles.quickActions}>
+          <SeekerText variant="overline" color="tertiary" style={styles.quickActionLabel}>
+            Quick Actions
+          </SeekerText>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {quickActions.map((action) => (
+              <TouchableOpacity
+                key={action.id}
+                onPress={() => handleQuickAction(action)}
+                style={styles.actionChip}
+              >
+                <View style={[styles.chipContent, { backgroundColor: theme.colors.background.elevated }]}>
+                  <MaterialCommunityIcon 
+                    name={action.icon} 
+                    size={16} 
+                    color={theme.colors.primary.teal} 
+                  />
+                  <SeekerText variant="caption" color="primary" style={styles.chipText}>
+                    {action.label}
+                  </SeekerText>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Input Area */}
+        <SeekerCard variant="solid" style={styles.inputContainer} elevated>
+          <View style={styles.inputRow}>
+            <TextInput
+              placeholder="Type your message..."
+              placeholderTextColor={theme.colors.text.tertiary}
+              value={inputText}
+              onChangeText={setInputText}
+              style={[styles.textInput, { color: theme.colors.text.primary }]}
+              onSubmitEditing={handleSendMessage}
+              multiline
+            />
+            <TouchableOpacity 
               onPress={handleSendMessage}
               disabled={!inputText.trim()}
-            />
-          }
-          onSubmitEditing={handleSendMessage}
-        />
-      </View>
-
-      {/* 음성 입력 FAB */}
-      <FAB
-        icon="microphone"
-        style={[styles.fab, { backgroundColor: theme.colors.primary }]}
-        onPress={() => {
-          // 음성 입력 기능 구현
-        }}
-      />
-    </KeyboardAvoidingView>
+              style={[
+                styles.sendButton, 
+                { 
+                  opacity: inputText.trim() ? 1 : 0.5,
+                  backgroundColor: theme.colors.primary.teal 
+                }
+              ]}
+            >
+              <MaterialCommunityIcon 
+                name="send" 
+                size={20} 
+                color={theme.colors.text.primary} 
+              />
+            </TouchableOpacity>
+          </View>
+        </SeekerCard>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -228,25 +284,65 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  locationCard: {
-    margin: 10,
-    elevation: 2,
+  keyboardContainer: {
+    flex: 1,
   },
-  locationContent: {
+  
+  // Header styles
+  headerCard: {
+    margin: 16,
+    marginBottom: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
   },
+  statusIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  locationInfo: {
+    flex: 1,
+  },
+  locationLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  statusIndicators: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  statusText: {
+    fontSize: 12,
+  },
+  
+  // Chat area styles
   chatArea: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
   },
   chatContent: {
     paddingBottom: 20,
+    paddingTop: 8,
   },
+  
+  // Message styles
   messageContainer: {
     flexDirection: 'row',
-    marginVertical: 5,
+    marginVertical: 8,
     alignItems: 'flex-end',
   },
   userMessage: {
@@ -256,40 +352,99 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   messageCard: {
-    maxWidth: width * 0.7,
-    elevation: 2,
+    marginHorizontal: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
-  messageContent: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  messageText: {
+    lineHeight: 20,
+    fontSize: 15,
   },
-  avatar: {
-    marginHorizontal: 5,
+  
+  // Avatar styles
+  userAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  aiAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  // Insurance offer styles
   insuranceOffer: {
-    marginTop: 10,
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    marginTop: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
+  insuranceTitle: {
+    marginBottom: 12,
+  },
+  insuranceDetail: {
+    marginBottom: 8,
+    fontSize: 14,
+  },
+  
+  // Quick actions styles
   quickActions: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  quickActionChip: {
-    marginRight: 8,
+  quickActionLabel: {
+    marginBottom: 12,
+    marginLeft: 4,
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
+  actionChip: {
+    marginRight: 12,
+    borderRadius: 20,
+  },
+  chipContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  chipText: {
+    marginLeft: 8,
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  
+  // Input styles
   inputContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    paddingBottom: 10,
+    margin: 16,
+    marginTop: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
   textInput: {
-    backgroundColor: 'transparent',
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 0,
+    maxHeight: 100,
   },
-  fab: {
-    position: 'absolute',
-    right: 16,
-    bottom: 80,
+  sendButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 12,
   },
 });

@@ -1,3 +1,6 @@
+// URL polyfill for deep linking
+import 'react-native-url-polyfill/auto';
+
 import { getRandomValues as expoCryptoGetRandomValues } from "expo-crypto";
 import { Buffer } from "buffer";
 

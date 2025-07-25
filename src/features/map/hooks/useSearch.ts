@@ -13,8 +13,11 @@ export const useSearch = () => {
 
   const searchQuery_ = useQuery({
     queryKey: ['places-search', searchQuery],
-    queryFn: () => searchPlaces(searchQuery),
-    enabled: searchQuery.trim().length > 0,
+    queryFn: () => {
+      console.log('🔍 Searching for:', searchQuery);
+      return searchPlaces(searchQuery);
+    },
+    enabled: searchQuery.trim().length > 2, // Require at least 3 characters to reduce API calls
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 

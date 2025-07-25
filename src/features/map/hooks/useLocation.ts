@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import * as Location from 'expo-location';
 import { useMapStore } from './useMapStore';
 import { MapLocation } from '../types';
+import { testGoogleApiKey } from '../services/placesService';
 
 const getCurrentLocation = async (): Promise<MapLocation> => {
   const { status } = await Location.requestForegroundPermissionsAsync();
@@ -36,6 +37,11 @@ export const useLocation = () => {
       setCurrentLocation(locationQuery.data);
     }
   }, [locationQuery.data, setCurrentLocation]);
+
+  // Test Google API key when component mounts
+  useEffect(() => {
+    testGoogleApiKey();
+  }, []);
 
   return {
     location: locationQuery.data,

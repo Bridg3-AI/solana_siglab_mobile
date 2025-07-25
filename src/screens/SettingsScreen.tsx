@@ -6,7 +6,7 @@ import {
   Dialog,
   RadioButton
 } from 'react-native-paper';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import ClusterPickerFeature from "../components/cluster/cluster-picker-feature";
 import { 

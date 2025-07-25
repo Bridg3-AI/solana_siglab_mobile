@@ -1,10 +1,7 @@
-// Polyfills
-import "./src/polyfills";
-
+// iOS-specific App entry point (without Solana Mobile Wallet Adapter)
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ConnectionProvider } from "./src/utils/ConnectionProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   DarkTheme as NavigationDarkTheme,
@@ -13,9 +10,7 @@ import {
   adaptNavigationTheme,
 } from "react-native-paper";
 import { AppNavigator } from "./src/navigators/AppNavigator";
-import { ClusterProvider } from "./src/components/cluster/cluster-data-access";
 import { CyberpunkThemeProvider, CyberpunkTheme } from "./src/components/cyberpunk";
-import { WalletProvider } from "./src/components/wallet";
 
 const queryClient = new QueryClient();
 
@@ -32,32 +27,19 @@ export default function App() {
       primary: CyberpunkTheme.colors.primary,
       background: CyberpunkTheme.colors.background,
       card: CyberpunkTheme.colors.surface,
-      text: CyberpunkTheme.colors.onBackground,
+      text: CyberpunkTheme.colors.onSurface,
       border: CyberpunkTheme.colors.outline,
-      notification: CyberpunkTheme.colors.error,
+      notification: CyberpunkTheme.colors.primary,
     },
   };
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ClusterProvider>
-        <ConnectionProvider config={{ commitment: "processed" }}>
-          <WalletProvider>
-            <CyberpunkThemeProvider>
-              <SafeAreaView
-                style={[
-                  styles.shell,
-                  {
-                    backgroundColor: CyberpunkTheme.colors.background,
-                  },
-                ]}
-              >
-                <AppNavigator theme={CyberpunkNavigationTheme} />
-              </SafeAreaView>
-            </CyberpunkThemeProvider>
-          </WalletProvider>
-        </ConnectionProvider>
-      </ClusterProvider>
+      <CyberpunkThemeProvider theme={CyberpunkTheme}>
+        <SafeAreaView style={styles.shell}>
+          <AppNavigator theme={CyberpunkNavigationTheme} />
+        </SafeAreaView>
+      </CyberpunkThemeProvider>
     </QueryClientProvider>
   );
 }

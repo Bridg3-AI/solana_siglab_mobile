@@ -1,18 +1,35 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 import { PublicKey, PublicKeyInitData } from "@solana/web3.js";
-import {
-  Account as AuthorizedAccount,
-  AuthorizationResult,
-  AuthorizeAPI,
-  AuthToken,
-  Base64EncodedAddress,
-  DeauthorizeAPI,
-  SignInPayloadWithRequiredFields,
-  SignInPayload,
-} from "@solana-mobile/mobile-wallet-adapter-protocol";
 import { toUint8Array } from "js-base64";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
+
+// Conditionally import mobile wallet adapter types only on Android
+let AuthorizedAccount: any = null;
+let AuthorizationResult: any = null;
+let AuthorizeAPI: any = null;
+let AuthToken: any = null;
+let Base64EncodedAddress: any = null;
+let DeauthorizeAPI: any = null;
+let SignInPayloadWithRequiredFields: any = null;
+let SignInPayload: any = null;
+
+if (Platform.OS === 'android') {
+  try {
+    const walletAdapterTypes = require("@solana-mobile/mobile-wallet-adapter-protocol");
+    AuthorizedAccount = walletAdapterTypes.Account;
+    AuthorizationResult = walletAdapterTypes.AuthorizationResult;
+    AuthorizeAPI = walletAdapterTypes.AuthorizeAPI;
+    AuthToken = walletAdapterTypes.AuthToken;
+    Base64EncodedAddress = walletAdapterTypes.Base64EncodedAddress;
+    DeauthorizeAPI = walletAdapterTypes.DeauthorizeAPI;
+    SignInPayloadWithRequiredFields = walletAdapterTypes.SignInPayloadWithRequiredFields;
+    SignInPayload = walletAdapterTypes.SignInPayload;
+  } catch (error) {
+    console.warn("Mobile Wallet Adapter types not available on this platform");
+  }
+}
 
 const CHAIN = "solana";
 const CLUSTER = "devnet";

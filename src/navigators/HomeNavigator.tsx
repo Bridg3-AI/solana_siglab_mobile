@@ -21,7 +21,9 @@ export function HomeNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        header: () => <TopBar />,
+        headerShown: route.name === 'Map' ? false : true,
+        header: route.name !== 'Map' ? () => <TopBar /> : undefined,
+        tabBarStyle: route.name === 'Map' ? { display: 'none' } : undefined,
         tabBarIcon: ({ focused, color, size }) => {
           switch (route.name) {
             case "Chat":
@@ -60,7 +62,11 @@ export function HomeNavigator() {
       <Tab.Screen 
         name="Map" 
         component={MapScreen}
-        options={{ title: "지도" }}
+        options={{ 
+          title: "지도",
+          headerShown: false,
+          tabBarStyle: { display: 'none' }
+        }}
       />
       <Tab.Screen 
         name="Settings" 

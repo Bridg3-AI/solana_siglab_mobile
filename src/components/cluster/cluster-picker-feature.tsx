@@ -14,7 +14,32 @@ function clusternetworkToIndex(clusterName: string): number {
 }
 
 export default function ClusterPickerFeature() {
-  const { selectedCluster, clusters, setSelectedCluster } = useCluster();
+  let selectedCluster, clusters, setSelectedCluster;
+  
+  try {
+    const clusterData = useCluster();
+    selectedCluster = clusterData.selectedCluster;
+    clusters = clusterData.clusters;
+    setSelectedCluster = clusterData.setSelectedCluster;
+  } catch (error) {
+    // Fallback when ClusterProvider is not available
+    const defaultCluster = {
+      name: "devnet",
+      endpoint: "https://api.devnet.solana.com",
+      network: ClusterNetwork.Devnet,
+    };
+    selectedCluster = defaultCluster;
+    clusters = [
+      defaultCluster,
+      {
+        name: "testnet",
+        endpoint: "https://api.testnet.solana.com", 
+        network: ClusterNetwork.Testnet,
+      }
+    ];
+    setSelectedCluster = () => {}; // No-op function
+  }
+
   const [devNetCluster, testNetCluster] = clusters;
 
   return (

@@ -6,7 +6,7 @@ import { ellipsify } from "../../utils/ellipsify";
 import { useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { Linking } from "react-native";
-import { useCluster } from "../cluster/cluster-data-access";
+// import { useCluster } from "../cluster/cluster-data-access"; // Temporarily disabled for iOS compatibility
 
 export function TopBarWalletButton({
   selectedAccount,
@@ -45,7 +45,10 @@ export function TopBarSettingsButton() {
 
 export function TopBarWalletMenu() {
   const { selectedAccount } = useAuthorization();
-  const { getExplorerUrl } = useCluster();
+  
+  // Use static explorer URL for now to avoid ClusterProvider issues
+  const getExplorerUrl = (path: string) => `https://explorer.solana.com/${path}?cluster=devnet`;
+  
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAuthorization } from '../../../utils/useAuthorization';
 import { 
@@ -87,7 +87,7 @@ export const WelcomeHeader: React.FC = () => {
             ]}
           >
             <LinearGradient
-              colors={colors.gradients.hologram}
+              colors={colors?.gradients?.hologram || ['rgba(0,255,255,0.8)', 'rgba(255,0,255,0.8)', 'rgba(139,0,255,0.8)']}
               style={styles.avatarGradient}
             >
               <MaterialCommunityIcon

@@ -26,7 +26,29 @@ export const CyberText: React.FC<CyberTextProps> = ({
   numberOfLines,
   onPress,
 }) => {
-  const { colors, typography } = useCyberpunkTheme();
+  let colors, typography;
+  
+  try {
+    const theme = useCyberpunkTheme();
+    colors = theme.colors;
+    typography = theme.typography;
+  } catch (error) {
+    // Fallback values if theme context is not available
+    colors = {
+      neon: { cyan: '#00FFFF', magenta: '#FF00FF', purple: '#8B00FF', lime: '#00FF00', pink: '#FF1493', red: '#FF0040' },
+      text: { primary: '#FFFFFF', secondary: '#E0E0E0', tertiary: '#B0B0B0', neon: '#00FFFF', disabled: '#666666', inverse: '#000000' },
+      glow: { cyanGlow: 'rgba(0, 255, 255, 0.3)', magentaGlow: 'rgba(255, 0, 255, 0.3)' }
+    };
+    typography = {
+      styles: {
+        h1: { fontSize: 32, fontWeight: 'bold' },
+        h3: { fontSize: 20, fontWeight: '600' },
+        body: { fontSize: 16 },
+        caption: { fontSize: 12 },
+        terminalText: { fontSize: 14, fontFamily: 'monospace' }
+      }
+    };
+  }
 
   const getTextColor = () => {
     if (color === 'neon') {

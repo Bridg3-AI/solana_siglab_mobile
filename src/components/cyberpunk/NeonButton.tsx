@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useCyberpunkTheme } from '../../theme/CyberpunkThemeProvider';
 
 interface NeonButtonProps {
@@ -24,7 +24,35 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   style,
   textStyle,
 }) => {
-  const { colors, typography, spacing } = useCyberpunkTheme();
+  let colors, typography, spacing;
+  
+  try {
+    const theme = useCyberpunkTheme();
+    colors = theme.colors;
+    typography = theme.typography;
+    spacing = theme.spacing;
+  } catch (error) {
+    // Fallback values if theme context is not available
+    colors = {
+      neon: { cyan: '#00FFFF', magenta: '#FF00FF', purple: '#8B00FF', lime: '#00FF00' },
+      dark: { deep: '#0F0F1F', abyss: '#050505' },
+      text: { primary: '#FFFFFF', secondary: '#E0E0E0', disabled: '#666666' },
+      glow: { cyanGlow: 'rgba(0, 255, 255, 0.3)', limeGlow: 'rgba(0, 255, 0, 0.3)' },
+      border: { subtle: 'rgba(255, 255, 255, 0.1)' },
+      gradients: { neonPrimary: ['#00FFFF', '#8B00FF'] }
+    };
+    typography = {
+      styles: {
+        button: { fontSize: 16, fontWeight: '600' },
+        terminalText: { fontSize: 14, fontFamily: 'monospace' }
+      }
+    };
+    spacing = {
+      space: { 2: 8, 3: 12, 4: 16, 6: 24, 8: 32 },
+      radius: { lg: 8 },
+      sizes: { buttonHeight: 44, buttonHeightSm: 36, buttonHeightLg: 52 }
+    };
+  }
 
   const getSizeStyles = () => {
     switch (size) {
@@ -89,7 +117,7 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
         activeOpacity={0.8}
       >
         <LinearGradient
-          colors={colors.gradients.neonPrimary}
+          colors={colors?.gradients?.neonPrimary || ['#00FFFF', '#8B00FF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[StyleSheet.absoluteFill, { borderRadius: spacing.radius.lg }]}

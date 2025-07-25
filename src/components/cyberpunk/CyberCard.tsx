@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useCyberpunkTheme } from '../../theme/CyberpunkThemeProvider';
 
 interface CyberCardProps {
@@ -18,7 +18,25 @@ export const CyberCard: React.FC<CyberCardProps> = ({
   style,
   onPress,
 }) => {
-  const { colors, spacing } = useCyberpunkTheme();
+  let colors, spacing;
+  
+  try {
+    const theme = useCyberpunkTheme();
+    colors = theme.colors;
+    spacing = theme.spacing;
+  } catch (error) {
+    // Fallback values if theme context is not available
+    colors = {
+      neon: { cyan: '#00FFFF', magenta: '#FF00FF', purple: '#8B00FF', lime: '#00FF00' },
+      dark: { deep: '#0F0F1F', void: '#0A0A0A' },
+      glass: { medium: 'rgba(255, 255, 255, 0.1)', light: 'rgba(255, 255, 255, 0.05)' },
+      border: { primary: 'rgba(0, 255, 255, 0.3)', subtle: 'rgba(255, 255, 255, 0.1)' }
+    };
+    spacing = {
+      radius: { xl: 12 },
+      space: { 4: 16 }
+    };
+  }
 
   const getCardStyle = () => {
     const baseStyle = {
@@ -70,13 +88,18 @@ export const CyberCard: React.FC<CyberCardProps> = ({
   const cardStyle = getCardStyle();
 
   if (variant === 'hologram') {
+    const gradientColors = [
+      `${colors.neon[glowColor] || '#00FFFF'}20`,
+      `${colors.dark.deep || '#0F0F1F'}90`,
+      `${colors.neon[glowColor] || '#00FFFF'}20`
+    ].filter(color => color && color !== 'undefined20' && color !== 'undefined90');
+
+    // Fallback to safe colors if the array is empty
+    const safeColors = gradientColors.length > 0 ? gradientColors : ['#00FFFF20', '#0F0F1F90', '#00FFFF20'];
+
     return (
       <LinearGradient
-        colors={[
-          `${colors.neon[glowColor]}20`,
-          `${colors.dark.deep}90`,
-          `${colors.neon[glowColor]}20`
-        ]}
+        colors={safeColors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[cardStyle, style]}

@@ -1,84 +1,17 @@
-import React, { useRef, useImperativeHandle, forwardRef, useEffect } from 'react';
-import { StyleSheet, Dimensions, View, Animated } from 'react-native';
-import RNMapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
-import LinearGradient from 'react-native-linear-gradient';
+import React, { useImperativeHandle, forwardRef } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { WebView } from 'react-native-webview';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useMapStore } from '../hooks/useMapStore';
 import { useLocation } from '../hooks/useLocation';
 import { MapLocation } from '../types';
-import { useCyberpunkTheme } from '../../../components/cyberpunk';
 
-const { width, height } = Dimensions.get('window');
 
 export interface MapViewRef {
   animateToRegion: (region: MapLocation, duration?: number) => void;
 }
 
-// Custom Cyberpunk Marker Component
-const CyberMarker = ({ coordinate, title, type = 'location' }: {
-  coordinate: { latitude: number; longitude: number };
-  title: string;
-  type?: 'location' | 'insurance' | 'geofence';
-}) => {
-  const { colors } = useCyberpunkTheme();
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.5,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
-
-  const getMarkerColor = () => {
-    switch (type) {
-      case 'insurance': return colors.neon.magenta;
-      case 'geofence': return colors.neon.purple;
-      default: return colors.neon.cyan;
-    }
-  };
-
-  const getMarkerIcon = () => {
-    switch (type) {
-      case 'insurance': return 'shield-check';
-      case 'geofence': return 'vector-polygon';
-      default: return 'crosshairs-gps';
-    }
-  };
-
-  return (
-    <Marker coordinate={coordinate} title={title}>
-      <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
-        <View style={styles.customMarker}>
-          <LinearGradient
-            colors={[getMarkerColor(), `${getMarkerColor()}80`, 'transparent']}
-            style={styles.markerGradient}
-          >
-            <MaterialCommunityIcon
-              name={getMarkerIcon()}
-              size={20}
-              color={colors.dark.void}
-            />
-          </LinearGradient>
-        </View>
-      </Animated.View>
-    </Marker>
-  );
-};
-
 export const MapView = forwardRef<MapViewRef>((_, ref) => {
-  const { colors } = useCyberpunkTheme();
-  const mapRef = useRef<RNMapView>(null);
   const { currentLocation, selectedMarker } = useMapStore();
   
   // Initialize location
@@ -86,215 +19,114 @@ export const MapView = forwardRef<MapViewRef>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     animateToRegion: (region: MapLocation, duration = 1000) => {
-      mapRef.current?.animateToRegion(region, duration);
+      console.log('Map animation requested for region:', region);
+      // For iframe maps, animation is handled by Google Maps
     },
   }));
 
-  // Dark cyberpunk map style
-  const darkMapStyle = [
-    {
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#0a0a0a"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#00ffff"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#0a0a0a"
-        }
-      ]
-    },
-    {
-      "featureType": "administrative.locality",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#ff00ff"
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#8b00ff"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#0f1f0f"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#1a1a2e"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#00ffff"
-        },
-        {
-          "weight": 0.5
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#16213e"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#ff00ff"
-        },
-        {
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#0f0f1f"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#00ffff"
-        }
-      ]
+  const getGoogleMapsEmbedUrl = () => {
+    if (currentLocation) {
+      const markers = selectedMarker ? 
+        `&markers=${selectedMarker.latitude},${selectedMarker.longitude}` : '';
+      return `https://www.google.com/maps/embed/v1/view?key=AIzaSyApk_NP_rGg-ZR4-HGM0Ppt4DT1p797yG0&center=${currentLocation.latitude},${currentLocation.longitude}&zoom=15${markers}`;
     }
-  ];
+    return 'https://www.google.com/maps/embed/v1/view?key=AIzaSyApk_NP_rGg-ZR4-HGM0Ppt4DT1p797yG0&center=37.5665,126.9780&zoom=10'; // Default to Seoul
+  };
+
+  const getHtmlContent = () => {
+    const mapUrl = getGoogleMapsEmbedUrl();
+    return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Google Maps</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          html, body {
+            height: 100%;
+            overflow: hidden;
+          }
+          iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            display: block;
+          }
+        </style>
+      </head>
+      <body>
+        <iframe 
+          src="${mapUrl}"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </body>
+      </html>
+    `;
+  };
 
   return (
-    <RNMapView
-      ref={mapRef}
-      provider={PROVIDER_GOOGLE}
-      style={styles.map}
-      region={currentLocation}
-      showsUserLocation={false} // We'll use custom user location
-      showsMyLocationButton={false}
-      customMapStyle={darkMapStyle}
-      mapType="standard"
-    >
-      {/* User location circle with cyber effect */}
-      <Circle
-        center={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
+    <View style={styles.container}>
+      {/* Google Maps iframe via WebView */}
+      <WebView
+        source={{ html: getHtmlContent() }}
+        style={styles.map}
+        startInLoadingState={true}
+        renderLoading={() => (
+          <View style={styles.loadingContainer}>
+            <MaterialCommunityIcon name="loading" size={32} color="#007AFF" />
+            <Text style={styles.loadingText}>
+              {currentLocation ? 'Loading map...' : 'Getting your location...'}
+            </Text>
+          </View>
+        )}
+        onError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          console.warn('WebView error: ', nativeEvent);
         }}
-        radius={100}
-        strokeWidth={2}
-        strokeColor={colors.neon.lime}
-        fillColor={`${colors.neon.lime}20`}
+        allowsInlineMediaPlayback={true}
+        mediaPlaybackRequiresUserAction={false}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        scalesPageToFit={true}
       />
-      
-      {/* User location marker */}
-      <CyberMarker
-        coordinate={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-        }}
-        title="Your Location"
-        type="location"
-      />
-      
-      {/* Selected location marker */}
-      {selectedMarker && (
-        <CyberMarker
-          coordinate={{
-            latitude: selectedMarker.latitude,
-            longitude: selectedMarker.longitude,
-          }}
-          title={selectedMarker.title}
-          type="insurance"
-        />
-      )}
-      
-      {/* Sample insurance zones */}
-      <Circle
-        center={{
-          latitude: currentLocation.latitude + 0.01,
-          longitude: currentLocation.longitude + 0.01,
-        }}
-        radius={500}
-        strokeWidth={1}
-        strokeColor={colors.neon.magenta}
-        fillColor={`${colors.neon.magenta}10`}
-      />
-      
-      {/* Sample geofence */}
-      <Circle
-        center={{
-          latitude: currentLocation.latitude - 0.01,
-          longitude: currentLocation.longitude - 0.01,
-        }}
-        radius={300}
-        strokeWidth={1}
-        strokeColor={colors.neon.purple}
-        fillColor={`${colors.neon.purple}10`}
-      />
-    </RNMapView>
+    </View>
   );
 });
 
 const styles = StyleSheet.create({
-  map: {
-    width: width,
-    height: height,
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
   },
   
-  // Custom marker styles
-  customMarker: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  markerGradient: {
+  map: {
     flex: 1,
+  },
+  
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
+    zIndex: 1,
+  },
+  
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 12,
+    textAlign: 'center',
   },
 });

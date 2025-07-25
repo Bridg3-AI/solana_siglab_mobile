@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Animated, Dimensions } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useCyberpunkTheme } from '../../../components/cyberpunk';
 import { WelcomeHeader } from './WelcomeHeader';
 import { QuickActions } from './QuickActions';
 import { WalletStatus } from './WalletStatus';
+import { WalletConnectButton } from '../../../components/wallet';
 
 const { width, height } = Dimensions.get('window');
 
@@ -87,6 +88,7 @@ export const HomeContainer: React.FC = () => {
           ]}
         >
           <WelcomeHeader />
+          <WalletConnectButton />
           <QuickActions />
           <WalletStatus />
         </Animated.View>

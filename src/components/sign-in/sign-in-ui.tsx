@@ -1,11 +1,9 @@
-import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol";
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { alertAndLog } from "../../utils/alertAndLog";
-import { useAuthorization } from "../../utils/useAuthorization";
-import { useMobileWallet } from "../../utils/useMobileWallet";
+import { useWallet } from "../wallet";
 import {
   TerminalText,
   useCyberpunkTheme
@@ -13,8 +11,7 @@ import {
 
 export function ConnectButton() {
   const { colors } = useCyberpunkTheme();
-  const { authorizeSession } = useAuthorization();
-  const { connect } = useMobileWallet();
+  const { connect, isConnecting, isConnected, account, platform } = useWallet();
   const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
   
   // Animation refs
@@ -22,7 +19,7 @@ export function ConnectButton() {
   const scanAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (authorizationInProgress) {
+    if (authorizationInProgress || isConnecting) {
       // Pulse animation during connection
       Animated.loop(
         Animated.sequence([
@@ -51,11 +48,11 @@ export function ConnectButton() {
       pulseAnim.setValue(1);
       scanAnim.setValue(0);
     }
-  }, [authorizationInProgress]);
+  }, [authorizationInProgress, isConnecting]);
   
   const handleConnectPress = useCallback(async () => {
     try {
-      if (authorizationInProgress) {
+      if (authorizationInProgress || isConnecting) {
         return;
       }
       setAuthorizationInProgress(true);
@@ -68,18 +65,18 @@ export function ConnectButton() {
     } finally {
       setAuthorizationInProgress(false);
     }
-  }, [authorizationInProgress, authorizeSession]);
+  }, [authorizationInProgress, connect]);
   
   return (
     <TouchableOpacity
-      style={[styles.connectButton, { opacity: authorizationInProgress ? 0.7 : 1 }]}
+      style={[styles.connectButton, { opacity: authorizationInProgress || isConnecting ? 0.7 : 1 }]}
       onPress={handleConnectPress}
-      disabled={authorizationInProgress}
+      disabled={authorizationInProgress || isConnecting}
       activeOpacity={0.8}
     >
       <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
         <LinearGradient
-          colors={colors.gradients.neonPrimary}
+          colors={colors?.gradients?.neonPrimary || ['#00FFFF', '#8B00FF']}
           style={styles.connectGradient}
         >
           {/* Scanning line during connection */}
@@ -105,13 +102,14 @@ export function ConnectButton() {
           {/* Icon and text */}
           <View style={styles.buttonContent}>
             <MaterialCommunityIcon
-              name={authorizationInProgress ? "loading" : "wallet-outline"}
+              name={authorizationInProgress || isConnecting ? "loading" : "wallet-outline"}
               size={20}
               color={colors.dark.void}
               style={styles.buttonIcon}
             />
             <TerminalText style={[styles.buttonText, { color: colors.dark.void }]}>
-              {authorizationInProgress ? 'CONNECTING...' : 'CONNECT_WALLET'}
+              {authorizationInProgress || isConnecting ? 'CONNECTING...' : 
+               isConnected ? `CONNECTED_${platform.toUpperCase()}` : 'CONNECT_WALLET'}
             </TerminalText>
           </View>
         </LinearGradient>

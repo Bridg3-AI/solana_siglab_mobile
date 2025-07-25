@@ -16,17 +16,37 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.web3.siglab"
+      "bundleIdentifier": "com.web3.siglab",
+      "scheme": "solana-siglab",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses location to provide GPS-based insurance services and geofencing features.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses location to provide GPS-based insurance services and geofencing features.",
+        "NSLocationAlwaysUsageDescription": "This app uses location to provide GPS-based insurance services and geofencing features."
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyApk_NP_rGg-ZR4-HGM0Ppt4DT1p797yG0"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.web3.siglab"
+      "package": "com.web3.siglab",
+      "scheme": "solana-siglab",
+      "config": {
+        "googleMapsApiKey": "AIzaSyApk_NP_rGg-ZR4-HGM0Ppt4DT1p797yG0"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b258d4dc-a9c4-4eb5-9aa9-50e674fb923e"
+      },
+      "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyApk_NP_rGg-ZR4-HGM0Ppt4DT1p797yG0"
+    },
+    "owner": "kyk9895"
   }
 }

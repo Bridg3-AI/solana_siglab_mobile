@@ -4,7 +4,7 @@ import {
   TextInput as PaperTextInput, 
   useTheme
 } from 'react-native-paper';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { 
   CyberCard, 
@@ -35,7 +35,7 @@ interface Message {
 const quickActions = [
   { id: '1', label: 'TRAVEL_INSURANCE', icon: 'airplane', neonColor: 'cyan' as const },
   { id: '2', label: 'FESTIVAL_SHIELD', icon: 'music', neonColor: 'magenta' as const },
-  { id: '3', label: 'MOUNTAIN_PROTOCOL', icon: 'mountain', neonColor: 'purple' as const },
+  { id: '3', label: 'MOUNTAIN_PROTOCOL', icon: 'image-filter-hdr', neonColor: 'purple' as const },
   { id: '4', label: 'GPS_COVERAGE', icon: 'map-marker', neonColor: 'lime' as const },
 ];
 

@@ -1,4 +1,4 @@
-import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol-web3js";
+import { Platform } from "react-native";
 import { Account, useAuthorization } from "./useAuthorization";
 import {
   Transaction,
@@ -6,20 +6,38 @@ import {
   VersionedTransaction,
 } from "@solana/web3.js";
 import { useCallback, useMemo } from "react";
-import { SignInPayload } from "@solana-mobile/mobile-wallet-adapter-protocol";
+
+// Conditionally import mobile wallet adapter only on Android
+let transact: any = null;
+let SignInPayload: any = null;
+
+if (Platform.OS === 'android') {
+  try {
+    transact = require("@solana-mobile/mobile-wallet-adapter-protocol-web3js").transact;
+    SignInPayload = require("@solana-mobile/mobile-wallet-adapter-protocol").SignInPayload;
+  } catch (error) {
+    console.warn("Mobile Wallet Adapter not available on this platform");
+  }
+}
 
 export function useMobileWallet() {
   const { authorizeSessionWithSignIn, authorizeSession, deauthorizeSession } =
     useAuthorization();
 
   const connect = useCallback(async (): Promise<Account> => {
+    if (Platform.OS !== 'android' || !transact) {
+      throw new Error('Mobile Wallet Adapter is only available on Android');
+    }
     return await transact(async (wallet) => {
       return await authorizeSession(wallet);
     });
   }, [authorizeSession]);
 
   const signIn = useCallback(
-    async (signInPayload: SignInPayload): Promise<Account> => {
+    async (signInPayload: any): Promise<Account> => {
+      if (Platform.OS !== 'android' || !transact) {
+        throw new Error('Mobile Wallet Adapter is only available on Android');
+      }
       return await transact(async (wallet) => {
         return await authorizeSessionWithSignIn(wallet, signInPayload);
       });
@@ -28,6 +46,9 @@ export function useMobileWallet() {
   );
 
   const disconnect = useCallback(async (): Promise<void> => {
+    if (Platform.OS !== 'android' || !transact) {
+      throw new Error('Mobile Wallet Adapter is only available on Android');
+    }
     await transact(async (wallet) => {
       await deauthorizeSession(wallet);
     });
@@ -38,6 +59,9 @@ export function useMobileWallet() {
       transaction: Transaction | VersionedTransaction,
       minContextSlot: number,
     ): Promise<TransactionSignature> => {
+      if (Platform.OS !== 'android' || !transact) {
+        throw new Error('Mobile Wallet Adapter is only available on Android');
+      }
       return await transact(async (wallet) => {
         await authorizeSession(wallet);
         const signatures = await wallet.signAndSendTransactions({
@@ -52,6 +76,9 @@ export function useMobileWallet() {
 
   const signMessage = useCallback(
     async (message: Uint8Array): Promise<Uint8Array> => {
+      if (Platform.OS !== 'android' || !transact) {
+        throw new Error('Mobile Wallet Adapter is only available on Android');
+      }
       return await transact(async (wallet) => {
         const authResult = await authorizeSession(wallet);
         const signedMessages = await wallet.signMessages({

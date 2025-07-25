@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAuthorization } from '../../../utils/useAuthorization';
 import { SignInFeature } from '../../../components/sign-in/sign-in-feature';
@@ -68,7 +68,7 @@ export const WalletStatus: React.FC = () => {
             <View style={styles.statusHeader}>
               <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
                 <LinearGradient
-                  colors={colors.gradients.matrix}
+                  colors={colors?.gradients?.matrix || ['#00FF00', '#008F11', '#004400']}
                   style={styles.connectionIndicator}
                 >
                   <MaterialCommunityIcon

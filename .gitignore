@@ -39,3 +39,30 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+# Environment variables
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+
+# Task files
+
+.taskmaster/ 
+.mcp.json
+
+# Reference UI (not part of main project)
+dApp_UI/

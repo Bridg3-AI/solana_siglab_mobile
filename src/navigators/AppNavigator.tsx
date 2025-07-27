@@ -9,7 +9,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import * as Screens from "../screens";
 import { HomeNavigator } from "./HomeNavigator";
-import OnboardingScreen from "../screens/OnboardingScreen";
 import { StatusBar } from "expo-status-bar";
 
 /**
@@ -32,7 +31,6 @@ export type InsuranceData = {
  * Root Stack Parameter List - Insurance creation flow
  */
 type RootStackParamList = {
-  Onboarding: undefined;
   HomeStack: undefined;
   Settings: undefined;
   // Insurance Creation Flow (7 steps)
@@ -56,12 +54,7 @@ const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
   return (
-    <Stack.Navigator initialRouteName={"Onboarding"}>
-      <Stack.Screen
-        name="Onboarding"
-        component={OnboardingScreen}
-        options={{ headerShown: false }}
-      />
+    <Stack.Navigator initialRouteName={"InsuranceHome"}>
       <Stack.Screen
         name="HomeStack"
         component={HomeNavigator}

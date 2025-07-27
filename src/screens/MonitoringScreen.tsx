@@ -99,7 +99,7 @@ export default function MonitoringScreen() {
                   paddingVertical: 4,
                   borderRadius: 12
                 }}>
-                  <Text style={[{ color: InsuranceColors.status.success, fontSize: 10, fontWeight: '600' }]}>
+                  <Text style={[{ color: InsuranceColors.status.success, fontSize: 10, fontWeight: '600' as const }]}>
                     ACTIVE
                   </Text>
                 </View>

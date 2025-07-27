@@ -3,7 +3,7 @@
  * Insurance indicator configuration
  */
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, Pressable, TextInput } from 'react-native';
+import { View, Text, SafeAreaView, Pressable, TextInput, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -86,7 +86,12 @@ export default function IndicatorScreen() {
           </View>
         </View>
 
-        <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth, { flex: 1 }]}>
+        <ScrollView 
+          style={{ flex: 1 }}
+          contentContainerStyle={InsuranceStyles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth]}>
           
           {/* Form Fields */}
           <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
@@ -157,7 +162,8 @@ export default function IndicatorScreen() {
               <Ionicons name="arrow-forward" size={16} color={InsuranceColors.background.primary} />
             </View>
           </Pressable>
-        </View>
+          </View>
+        </ScrollView>
       </LinearGradient>
     </SafeAreaView>
   );

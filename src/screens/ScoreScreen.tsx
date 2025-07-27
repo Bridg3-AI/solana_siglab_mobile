@@ -3,7 +3,7 @@
  * Insurance feasibility verification results
  */
 import React from 'react';
-import { View, Text, SafeAreaView, Pressable } from 'react-native';
+import { View, Text, SafeAreaView, Pressable, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -77,7 +77,12 @@ export default function ScoreScreen() {
           </View>
         </View>
 
-        <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth, { flex: 1 }]}>
+        <ScrollView 
+          style={{ flex: 1 }}
+          contentContainerStyle={InsuranceStyles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth]}>
           
           {/* Score Result Card */}
           <Card style={[InsuranceStyles.glassCardWithShadow, { padding: 24, marginBottom: 24 }]}>
@@ -163,7 +168,8 @@ export default function ScoreScreen() {
               <Ionicons name="arrow-forward" size={16} color={InsuranceColors.background.primary} />
             </View>
           </Pressable>
-        </View>
+          </View>
+        </ScrollView>
       </LinearGradient>
     </SafeAreaView>
   );

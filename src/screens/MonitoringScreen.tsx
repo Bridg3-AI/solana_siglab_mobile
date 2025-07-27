@@ -64,7 +64,11 @@ export default function MonitoringScreen() {
           </View>
         </View>
 
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView 
+          style={{ flex: 1 }}
+          contentContainerStyle={InsuranceStyles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth]}>
             
             {/* Success Message */}
@@ -156,7 +160,7 @@ export default function MonitoringScreen() {
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
                   Until Threshold
                 </Text>
-                <Text style={[InsuranceStyles.status.success, { fontSize: 14, fontWeight: '600' }]}>
+                <Text style={[{ color: InsuranceColors.status.success }, { fontSize: 14, fontWeight: '600' }]}>
                   30 AQI buffer
                 </Text>
               </View>

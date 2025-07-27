@@ -82,7 +82,11 @@ export default function PolicyScreen() {
           </View>
         </View>
 
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView 
+          style={{ flex: 1 }}
+          contentContainerStyle={InsuranceStyles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth]}>
             
             {/* Policy Summary */}

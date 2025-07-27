@@ -3,7 +3,7 @@
  * Insurance premium calculation and configuration
  */
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, Pressable } from 'react-native';
+import { View, Text, SafeAreaView, Pressable, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -82,7 +82,12 @@ export default function PremiumScreen() {
           </View>
         </View>
 
-        <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth, { flex: 1 }]}>
+        <ScrollView 
+          style={{ flex: 1 }}
+          contentContainerStyle={InsuranceStyles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth]}>
           
           {/* Premium Calculation Result */}
           <Card style={[InsuranceStyles.glassCardWithShadow, { padding: 24, marginBottom: 24 }]}>
@@ -167,7 +172,8 @@ export default function PremiumScreen() {
               <Ionicons name="arrow-forward" size={16} color={InsuranceColors.background.primary} />
             </View>
           </Pressable>
-        </View>
+          </View>
+        </ScrollView>
       </LinearGradient>
     </SafeAreaView>
   );

@@ -102,7 +102,7 @@ export default function InsuranceHomeScreen() {
         style={InsuranceStyles.container}
       >
         <ScrollView 
-          style={InsuranceStyles.container}
+          style={{ flex: 1 }}
           contentContainerStyle={InsuranceStyles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >

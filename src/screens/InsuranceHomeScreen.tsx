@@ -26,17 +26,17 @@ const { width } = Dimensions.get('window');
 const popularInsurances = [
   {
     id: '1',
-    title: '서울 미세먼지 보험',
-    description: 'PM10 ≥ 200 μg/m³가 3일 지속시',
-    payout: '50,000 KRW',
-    premium: '2,000 KRW',
+    title: 'LA Air Quality Insurance',
+    description: 'AQI ≥ 150 for 3 consecutive days',
+    payout: '$500',
+    premium: '$20',
     reliability: 92,
     subscribers: 1234
   },
   {
     id: '2',
-    title: '비트코인 급락 보험',
-    description: 'BTC 가격이 24시간 내 -15% 하락시',
+    title: 'Bitcoin Crash Insurance',
+    description: 'BTC price drops -15% within 24 hours',
     payout: '100 USDC',
     premium: '5 USDC',
     reliability: 88,
@@ -44,10 +44,10 @@ const popularInsurances = [
   },
   {
     id: '3',
-    title: '태풍 경보 보험',
-    description: '부산 태풍 경보 발령시',
-    payout: '30,000 KRW',
-    premium: '1,500 KRW',
+    title: 'Hurricane Alert Insurance',
+    description: 'Hurricane warning issued in Florida',
+    payout: '$300',
+    premium: '$15',
     reliability: 95,
     subscribers: 642
   }
@@ -60,10 +60,10 @@ type RootStackParamList = {
 export default function InsuranceHomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // Get current time in Korean format
+  // Get current time in English format
   const getCurrentTime = () => {
-    return new Date().toLocaleString('ko-KR', {
-      timeZone: 'Asia/Seoul',
+    return new Date().toLocaleString('en-US', {
+      timeZone: 'America/New_York',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -83,7 +83,7 @@ export default function InsuranceHomeScreen() {
       premium: parseInt(insurance.premium.replace(/[^0-9]/g, '')),
       maxPayout: parseInt(insurance.payout.replace(/[^0-9]/g, '')),
       reliability: insurance.reliability,
-      currency: insurance.premium.includes('USDC') ? 'USDC' : 'KRW',
+      currency: insurance.premium.includes('USDC') ? 'USDC' : 'USD',
       status: 'draft'
     };
     
@@ -121,10 +121,10 @@ export default function InsuranceHomeScreen() {
               
               <View style={styles.welcomeText}>
                 <Text style={[styles.welcomeTitle, InsuranceStyles.neonText]}>
-                  안녕하세요!
+                  Welcome!
                 </Text>
                 <Text style={[InsuranceStyles.secondaryText, styles.welcomeSubtitle]}>
-                  나만의 맞춤형 보험을 만들어보세요
+                  Create your personalized insurance plan
                 </Text>
                 <Text style={[InsuranceStyles.mutedText, styles.timeText]}>
                   {getCurrentTime()}
@@ -136,10 +136,10 @@ export default function InsuranceHomeScreen() {
             <Card style={[InsuranceStyles.glassCardWithShadow, InsuranceStyles.accentCard, styles.ctaCard]}>
               <View style={InsuranceStyles.centerContent}>
                 <Text style={[styles.ctaTitle, InsuranceStyles.gradientText]}>
-                  나만의 보험 만들기
+                  Create Custom Insurance
                 </Text>
                 <Text style={[InsuranceStyles.mutedText, styles.ctaDescription]}>
-                  자연어로 설명하면 즉시 보험 상품을 생성해드려요
+                  Describe in plain language and we'll create your insurance instantly
                 </Text>
                 
                 <Pressable
@@ -159,7 +159,7 @@ export default function InsuranceHomeScreen() {
                       style={styles.buttonIcon}
                     />
                     <Text style={InsuranceStyles.primaryButtonText}>
-                      새 보험 설계하기
+                      Design New Insurance
                     </Text>
                   </View>
                 </Pressable>
@@ -170,7 +170,7 @@ export default function InsuranceHomeScreen() {
             <View style={styles.popularSection}>
               <View style={InsuranceStyles.spaceBetween}>
                 <Text style={[InsuranceStyles.primaryText, styles.sectionTitle]}>
-                  인기 보험 상품
+                  Popular Insurance Products
                 </Text>
                 <Ionicons 
                   name="trending-up" 
@@ -203,7 +203,7 @@ export default function InsuranceHomeScreen() {
                           
                           <View style={styles.reliabilityBadge}>
                             <Text style={[InsuranceStyles.mutedText, styles.badgeText]}>
-                              신뢰도 {insurance.reliability}%
+                              Reliability {insurance.reliability}%
                             </Text>
                           </View>
                         </View>
@@ -213,7 +213,7 @@ export default function InsuranceHomeScreen() {
                           <View style={styles.priceInfo}>
                             <View style={styles.priceItem}>
                               <Text style={[InsuranceStyles.mutedText, styles.priceLabel]}>
-                                보험료
+                                Premium
                               </Text>
                               <Text style={[InsuranceStyles.primaryText, styles.priceValue]}>
                                 {insurance.premium}
@@ -222,7 +222,7 @@ export default function InsuranceHomeScreen() {
                             
                             <View style={styles.priceItem}>
                               <Text style={[InsuranceStyles.mutedText, styles.priceLabel]}>
-                                최대 지급액
+                                Max Payout
                               </Text>
                               <Text style={[InsuranceStyles.neonText, styles.priceValue]}>
                                 {insurance.payout}
@@ -237,7 +237,7 @@ export default function InsuranceHomeScreen() {
                               color={InsuranceColors.text.muted} 
                             />
                             <Text style={[InsuranceStyles.mutedText, styles.subscriberText]}>
-                              {insurance.subscribers.toLocaleString()}명 가입
+                              {insurance.subscribers.toLocaleString()} subscribers
                             </Text>
                           </View>
                         </View>
@@ -257,7 +257,7 @@ export default function InsuranceHomeScreen() {
                       2,847
                     </Text>
                     <Text style={[InsuranceStyles.mutedText, styles.statLabel]}>
-                      활성 보험
+                      Active Policies
                     </Text>
                   </View>
                 </Card>
@@ -265,10 +265,10 @@ export default function InsuranceHomeScreen() {
                 <Card style={[InsuranceStyles.glassCard, styles.statCard]}>
                   <View style={InsuranceStyles.centerContent}>
                     <Text style={[InsuranceStyles.gradientText, styles.statValue]}>
-                      ₩127M
+                      $1.27M
                     </Text>
                     <Text style={[InsuranceStyles.mutedText, styles.statLabel]}>
-                      총 지급액
+                      Total Payouts
                     </Text>
                   </View>
                 </Card>

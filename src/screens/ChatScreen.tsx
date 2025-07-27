@@ -29,27 +29,27 @@ const { width } = Dimensions.get('window');
 // Example prompts data (from dApp_UI)
 const examplePrompts = [
   {
-    category: '날씨',
+    category: 'Weather',
     prompts: [
-      '서울 미세먼지 PM10 ≥ 200 μg/m³가 3일 지속되면 5만 원 지급',
-      '부산에 태풍 경보가 발령되면 3만 원 지급',
-      '제주도 강수량이 하루 100mm 이상이면 2만 원 지급'
+      'Pay $500 if LA AQI ≥ 150 for 3 consecutive days',
+      'Pay $300 if hurricane warning is issued in Florida',
+      'Pay $200 if NYC daily rainfall exceeds 4 inches'
     ]
   },
   {
-    category: '금융',
+    category: 'Finance',
     prompts: [
-      '비트코인이 24시간 내 15% 이상 하락하면 10만 원 지급',
-      '코스피가 주간 -5% 이상 하락하면 5만 원 지급',
-      'USD/KRW 환율이 1,400원을 넘으면 3만 원 지급'
+      'Pay $1,000 if Bitcoin drops 15% or more within 24 hours',
+      'Pay $500 if S&P 500 drops -5% or more weekly',
+      'Pay $300 if EUR/USD exchange rate falls below 1.05'
     ]
   },
   {
-    category: '스포츠',
+    category: 'Sports',
     prompts: [
-      '한국이 월드컵에서 16강에 진출하지 못하면 2만 원 지급',
-      '프리미어리그에서 손흥민이 15골 이하면 1만 원 지급',
-      'KBO 리그에서 두산이 4위 이하로 시즌을 마치면 3만 원 지급'
+      'Pay $200 if Lakers miss NBA playoffs this season',
+      'Pay $100 if Patrick Mahomes throws less than 25 TDs in NFL season',
+      'Pay $300 if Yankees finish below .500 in MLB season'
     ]
   }
 ];
@@ -74,12 +74,12 @@ export default function ChatScreen() {
 
   const handleSubmit = async () => {
     if (!input.trim()) {
-      setError('보험 아이디어를 입력해주세요.');
+      setError('Please enter your insurance idea.');
       return;
     }
 
     if (input.length > 80) {
-      setError('80자 이내로 입력해주세요.');
+      setError('Please enter within 80 characters.');
       return;
     }
 
@@ -99,7 +99,7 @@ export default function ChatScreen() {
         premium: 0,
         maxPayout: 0,
         reliability: 0,
-        currency: 'KRW',
+        currency: 'USD',
         status: 'draft',
         ...initialData
       };
@@ -139,15 +139,15 @@ export default function ChatScreen() {
               onPress={handleBack}
             >
               <Ionicons name="arrow-back" size={20} color={InsuranceColors.text.primary} />
-              <Text style={[InsuranceStyles.secondaryText, styles.backText]}>이전</Text>
+              <Text style={[InsuranceStyles.secondaryText, styles.backText]}>Back</Text>
             </Pressable>
             
             <View style={styles.headerCenter}>
               <Text style={[InsuranceStyles.gradientText, styles.headerTitle]}>
-                Seeker 보험
+                Seeker Insurance
               </Text>
               <Text style={[InsuranceStyles.mutedText, styles.headerSubtitle]}>
-                아이디어 입력
+                Idea Input
               </Text>
             </View>
             
@@ -189,10 +189,10 @@ export default function ChatScreen() {
                   />
                   <View style={styles.instructionText}>
                     <Text style={[InsuranceStyles.primaryText, styles.instructionTitle]}>
-                      보험 아이디어를 자연어로 설명해주세요
+                      Describe your insurance idea in plain language
                     </Text>
                     <Text style={[InsuranceStyles.secondaryText, styles.instructionSubtitle]}>
-                      "조건이 발생하면 얼마를 지급" 형태로 작성하면 더 정확해요
+                      Format like "If condition occurs, pay amount" for better accuracy
                     </Text>
                   </View>
                 </View>
@@ -204,7 +204,7 @@ export default function ChatScreen() {
                   <TextInput
                     value={input}
                     onChangeText={setInput}
-                    placeholder="예: 서울 미세먼지 PM10이 200 이상으로 3일 지속되면 5만 원 지급"
+                    placeholder="e.g. Pay $500 if LA AQI exceeds 150 for 3 consecutive days"
                     placeholderTextColor={InsuranceColors.text.muted}
                     style={[InsuranceStyles.textInput, styles.textArea]}
                     multiline
@@ -259,7 +259,7 @@ export default function ChatScreen() {
                         color={InsuranceColors.background.primary} 
                       />
                       <Text style={[InsuranceStyles.primaryButtonText, styles.processingText]}>
-                        분석 중...
+                        Analyzing...
                       </Text>
                     </View>
                   ) : (
@@ -270,7 +270,7 @@ export default function ChatScreen() {
                         color={InsuranceColors.background.primary} 
                       />
                       <Text style={InsuranceStyles.primaryButtonText}>
-                        가능성 검증하기
+                        Verify Feasibility
                       </Text>
                     </View>
                   )}
@@ -280,7 +280,7 @@ export default function ChatScreen() {
               {/* Example Prompts */}
               <View style={styles.examplesSection}>
                 <Text style={[InsuranceStyles.primaryText, styles.sectionTitle]}>
-                  예시 아이디어
+                  Example Ideas
                 </Text>
                 
                 {/* Category Tabs */}
@@ -329,17 +329,17 @@ export default function ChatScreen() {
               {/* Tips Section */}
               <Card style={[InsuranceStyles.glassCard, styles.tipsCard]}>
                 <Text style={[InsuranceStyles.primaryText, styles.tipsTitle]}>
-                  💡 작성 팁
+                  💡 Writing Tips
                 </Text>
                 <View style={styles.tipsList}>
                   <Text style={[InsuranceStyles.mutedText, styles.tipItem]}>
-                    • 구체적인 조건과 수치를 포함해주세요
+                    • Include specific conditions and values
                   </Text>
                   <Text style={[InsuranceStyles.mutedText, styles.tipItem]}>
-                    • 측정 가능한 지표를 사용해주세요
+                    • Use measurable indicators
                   </Text>
                   <Text style={[InsuranceStyles.mutedText, styles.tipItem]}>
-                    • 도박성 내용은 제한될 수 있어요
+                    • Gambling-related content may be restricted
                   </Text>
                 </View>
               </Card>

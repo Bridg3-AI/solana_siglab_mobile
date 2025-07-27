@@ -54,10 +54,10 @@ export default function ScoreScreen() {
             
             <View style={InsuranceStyles.centerContent}>
               <Text style={[InsuranceStyles.gradientText, { fontSize: 18, fontWeight: '600' }]}>
-                Seeker 보험
+                Seeker Insurance
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                가능성 검증
+                Feasibility Verification
               </Text>
             </View>
             
@@ -96,11 +96,11 @@ export default function ScoreScreen() {
               </View>
               
               <Text style={[InsuranceStyles.gradientText, { fontSize: 24, fontWeight: '700', marginBottom: 8 }]}>
-                검증 완료!
+                Verification Complete!
               </Text>
               
               <Text style={[InsuranceStyles.secondaryText, { textAlign: 'center', marginBottom: 20 }]}>
-                입력하신 보험 아이디어의 가능성을 검증했습니다
+                We've verified the feasibility of your insurance idea
               </Text>
               
               <View style={{ backgroundColor: InsuranceColors.glass.accent, padding: 16, borderRadius: 12, width: '100%' }}>
@@ -114,12 +114,12 @@ export default function ScoreScreen() {
           {/* Feasibility Score */}
           <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
             <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-              실현 가능성 점수
+              Feasibility Score
             </Text>
             
             <View style={InsuranceStyles.spaceBetween}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                데이터 가용성
+                Data Availability
               </Text>
               <Text style={[InsuranceStyles.neonText, { fontSize: 14, fontWeight: '600' }]}>
                 95%
@@ -128,7 +128,7 @@ export default function ScoreScreen() {
             
             <View style={[InsuranceStyles.spaceBetween, { marginTop: 8 }]}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                시장 수요
+                Market Demand
               </Text>
               <Text style={[InsuranceStyles.neonText, { fontSize: 14, fontWeight: '600' }]}>
                 88%
@@ -137,7 +137,7 @@ export default function ScoreScreen() {
             
             <View style={[InsuranceStyles.spaceBetween, { marginTop: 8 }]}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                위험도 평가
+                Risk Assessment
               </Text>
               <Text style={[InsuranceStyles.neonText, { fontSize: 14, fontWeight: '600' }]}>
                 92%
@@ -158,7 +158,7 @@ export default function ScoreScreen() {
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={InsuranceStyles.primaryButtonText}>
-                지표 설정하기
+                Set Indicators
               </Text>
               <Ionicons name="arrow-forward" size={16} color={InsuranceColors.background.primary} />
             </View>

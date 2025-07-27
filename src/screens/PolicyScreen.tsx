@@ -59,10 +59,10 @@ export default function PolicyScreen() {
             
             <View style={InsuranceStyles.centerContent}>
               <Text style={[InsuranceStyles.gradientText, { fontSize: 18, fontWeight: '600' }]}>
-                Seeker 보험
+                Seeker Insurance
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                정책 미리보기
+                Policy Preview
               </Text>
             </View>
             
@@ -96,7 +96,7 @@ export default function PolicyScreen() {
                 />
                 
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 18, fontWeight: '600', marginBottom: 8 }]}>
-                  보험 정책 요약
+                  Insurance Policy Summary
                 </Text>
                 
                 <View style={{ 
@@ -116,12 +116,12 @@ export default function PolicyScreen() {
             {/* Policy Details */}
             <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
               <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-                보험 상세 정보
+                Insurance Details
               </Text>
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  측정 지표
+                  Measurement Indicator
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 14 }]}>
                   {insuranceData.indicator}
@@ -130,7 +130,7 @@ export default function PolicyScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  임계값
+                  Threshold Value
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 14 }]}>
                   {insuranceData.threshold}
@@ -139,10 +139,10 @@ export default function PolicyScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  지속 기간
+                  Duration
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 14 }]}>
-                  {insuranceData.period}일
+                  {insuranceData.period} days
                 </Text>
               </View>
             </Card>
@@ -150,12 +150,12 @@ export default function PolicyScreen() {
             {/* Financial Terms */}
             <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
               <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-                보험료 및 보상
+                Premium & Compensation
               </Text>
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  월 보험료
+                  Monthly Premium
                 </Text>
                 <Text style={[InsuranceStyles.neonText, { fontSize: 16, fontWeight: '600' }]}>
                   {insuranceData.premium?.toLocaleString()} {insuranceData.currency}
@@ -164,7 +164,7 @@ export default function PolicyScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  최대 지급액
+                  Maximum Payout
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600' }]}>
                   {insuranceData.maxPayout?.toLocaleString()} {insuranceData.currency}
@@ -173,7 +173,7 @@ export default function PolicyScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  신뢰도
+                  Reliability
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600' }]}>
                   {insuranceData.reliability}%
@@ -184,20 +184,20 @@ export default function PolicyScreen() {
             {/* Terms and Conditions */}
             <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
               <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-                이용 약관
+                Terms and Conditions
               </Text>
               
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12, lineHeight: 16, marginBottom: 8 }]}>
-                • 보험료는 매월 자동으로 차감됩니다
+                • Premium is automatically deducted monthly
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12, lineHeight: 16, marginBottom: 8 }]}>
-                • 조건 충족 시 자동으로 보상이 지급됩니다
+                • Compensation is automatically paid when conditions are met
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12, lineHeight: 16, marginBottom: 8 }]}>
-                • 언제든지 보험을 해지할 수 있습니다
+                • You can cancel the insurance at any time
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12, lineHeight: 16 }]}>
-                • 데이터는 공인된 API에서 실시간으로 수집됩니다
+                • Data is collected in real-time from certified APIs
               </Text>
             </Card>
 
@@ -213,7 +213,7 @@ export default function PolicyScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Ionicons name="checkmark-circle" size={20} color={InsuranceColors.background.primary} />
                 <Text style={InsuranceStyles.primaryButtonText}>
-                  보험 가입하기
+                  Subscribe to Insurance
                 </Text>
               </View>
             </Pressable>

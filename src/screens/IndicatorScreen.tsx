@@ -26,8 +26,8 @@ export default function IndicatorScreen() {
   const route = useRoute<IndicatorScreenRouteProp>();
   
   const [insuranceData, setInsuranceData] = useState(route.params.data);
-  const [indicator, setIndicator] = useState(insuranceData.indicator || 'PM10 농도');
-  const [threshold, setThreshold] = useState(insuranceData.threshold?.toString() || '200');
+  const [indicator, setIndicator] = useState(insuranceData.indicator || 'AQI Index');
+  const [threshold, setThreshold] = useState(insuranceData.threshold?.toString() || '150');
   const [period, setPeriod] = useState(insuranceData.period?.toString() || '3');
 
   const handleNext = () => {
@@ -63,10 +63,10 @@ export default function IndicatorScreen() {
             
             <View style={InsuranceStyles.centerContent}>
               <Text style={[InsuranceStyles.gradientText, { fontSize: 18, fontWeight: '600' }]}>
-                Seeker 보험
+                Seeker Insurance
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                지표 설정
+                Indicator Setup
               </Text>
             </View>
             
@@ -91,19 +91,19 @@ export default function IndicatorScreen() {
           {/* Form Fields */}
           <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
             <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 20 }]}>
-              보험 지표 설정
+              Insurance Indicator Setup
             </Text>
             
             {/* Indicator */}
             <View style={{ marginBottom: 16 }}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14, marginBottom: 8 }]}>
-                측정 지표
+                Measurement Indicator
               </Text>
               <TextInput
                 value={indicator}
                 onChangeText={setIndicator}
                 style={[InsuranceStyles.textInput, { height: 48 }]}
-                placeholder="예: PM10 농도"
+                placeholder="e.g. AQI Index"
                 placeholderTextColor={InsuranceColors.text.muted}
               />
             </View>
@@ -111,7 +111,7 @@ export default function IndicatorScreen() {
             {/* Threshold */}
             <View style={{ marginBottom: 16 }}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14, marginBottom: 8 }]}>
-                임계값
+                Threshold Value
               </Text>
               <TextInput
                 value={threshold}
@@ -126,7 +126,7 @@ export default function IndicatorScreen() {
             {/* Period */}
             <View style={{ marginBottom: 16 }}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14, marginBottom: 8 }]}>
-                지속 기간 (일)
+                Duration (days)
               </Text>
               <TextInput
                 value={period}
@@ -152,7 +152,7 @@ export default function IndicatorScreen() {
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={InsuranceStyles.primaryButtonText}>
-                프리미엄 계산하기
+                Calculate Premium
               </Text>
               <Ionicons name="arrow-forward" size={16} color={InsuranceColors.background.primary} />
             </View>

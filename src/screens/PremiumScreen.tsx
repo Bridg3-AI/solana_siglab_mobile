@@ -59,10 +59,10 @@ export default function PremiumScreen() {
             
             <View style={InsuranceStyles.centerContent}>
               <Text style={[InsuranceStyles.gradientText, { fontSize: 18, fontWeight: '600' }]}>
-                Seeker 보험
+                Seeker Insurance
               </Text>
               <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                프리미엄 계산
+                Premium Calculation
               </Text>
             </View>
             
@@ -90,13 +90,13 @@ export default function PremiumScreen() {
               <Ionicons name="calculator" size={32} color={InsuranceColors.primary.teal} style={{ marginBottom: 16 }} />
               
               <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 20 }]}>
-                프리미엄 계산 완료
+                Premium Calculation Complete
               </Text>
               
               <View style={{ width: '100%' }}>
                 <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                   <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                    월 보험료
+                    Monthly Premium
                   </Text>
                   <Text style={[InsuranceStyles.neonText, { fontSize: 18, fontWeight: '700' }]}>
                     {insuranceData.premium?.toLocaleString()} {insuranceData.currency}
@@ -105,7 +105,7 @@ export default function PremiumScreen() {
                 
                 <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                   <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                    최대 지급액
+                    Maximum Payout
                   </Text>
                   <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600' }]}>
                     {insuranceData.maxPayout?.toLocaleString()} {insuranceData.currency}
@@ -114,7 +114,7 @@ export default function PremiumScreen() {
                 
                 <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                   <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                    신뢰도
+                    Reliability
                   </Text>
                   <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600' }]}>
                     {insuranceData.reliability}%
@@ -127,24 +127,24 @@ export default function PremiumScreen() {
           {/* Risk Assessment */}
           <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
             <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-              위험도 평가
+              Risk Assessment
             </Text>
             
             <View style={[InsuranceStyles.spaceBetween, { marginBottom: 8 }]}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                발생 확률
+                Occurrence Probability
               </Text>
               <Text style={[{ color: InsuranceColors.status.warning }, { fontSize: 14, fontWeight: '600' }]}>
-                낮음
+                Low
               </Text>
             </View>
             
             <View style={[InsuranceStyles.spaceBetween, { marginBottom: 8 }]}>
               <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                예상 손실
+                Expected Loss
               </Text>
               <Text style={[{ color: InsuranceColors.status.success }, { fontSize: 14, fontWeight: '600' }]}>
-                보통
+                Moderate
               </Text>
             </View>
           </Card>
@@ -162,7 +162,7 @@ export default function PremiumScreen() {
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={InsuranceStyles.primaryButtonText}>
-                정책 미리보기
+                Preview Policy
               </Text>
               <Ionicons name="arrow-forward" size={16} color={InsuranceColors.background.primary} />
             </View>

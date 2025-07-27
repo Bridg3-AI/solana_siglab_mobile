@@ -23,7 +23,7 @@ export type InsuranceData = {
   premium: number;
   maxPayout: number;
   reliability: number;
-  currency: 'KRW' | 'USDC';
+  currency: 'USD' | 'USDC';
   status: 'draft' | 'active' | 'claimed';
 };
 
@@ -66,7 +66,7 @@ const AppStack = () => {
         component={Screens.InsuranceHomeScreen}
         options={{ 
           headerShown: false,
-          title: "Seeker 보험" 
+          title: "Seeker Insurance" 
         }}
       />
       <Stack.Screen
@@ -74,7 +74,7 @@ const AppStack = () => {
         component={Screens.ChatScreen}
         options={{ 
           headerShown: false,
-          title: "아이디어 입력" 
+          title: "Idea Input" 
         }}
       />
       <Stack.Screen
@@ -82,7 +82,7 @@ const AppStack = () => {
         component={Screens.ScoreScreen}
         options={{ 
           headerShown: false,
-          title: "가능성 검증" 
+          title: "Feasibility Verification" 
         }}
       />
       <Stack.Screen
@@ -90,7 +90,7 @@ const AppStack = () => {
         component={Screens.IndicatorScreen}
         options={{ 
           headerShown: false,
-          title: "지표 설정" 
+          title: "Indicator Setup" 
         }}
       />
       <Stack.Screen
@@ -98,7 +98,7 @@ const AppStack = () => {
         component={Screens.PremiumScreen}
         options={{ 
           headerShown: false,
-          title: "프리미엄 계산" 
+          title: "Premium Calculation" 
         }}
       />
       <Stack.Screen
@@ -106,7 +106,7 @@ const AppStack = () => {
         component={Screens.PolicyScreen}
         options={{ 
           headerShown: false,
-          title: "정책 미리보기" 
+          title: "Policy Preview" 
         }}
       />
       <Stack.Screen
@@ -114,7 +114,7 @@ const AppStack = () => {
         component={Screens.MonitoringScreen}
         options={{ 
           headerShown: false,
-          title: "모니터링" 
+          title: "Monitoring" 
         }}
       />
     </Stack.Navigator>

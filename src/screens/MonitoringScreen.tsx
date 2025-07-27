@@ -44,10 +44,10 @@ export default function MonitoringScreen() {
         <View style={[InsuranceStyles.glassHeader, InsuranceStyles.padding]}>
           <View style={[InsuranceStyles.maxWidth, InsuranceStyles.centerContent]}>
             <Text style={[InsuranceStyles.gradientText, { fontSize: 18, fontWeight: '600' }]}>
-              Seeker 보험
+              Seeker Insurance
             </Text>
             <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-              모니터링
+              Monitoring
             </Text>
           </View>
           
@@ -78,11 +78,11 @@ export default function MonitoringScreen() {
                 />
                 
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 20, fontWeight: '700', marginBottom: 8 }]}>
-                  보험 가입 완료!
+                  Insurance Enrollment Complete!
                 </Text>
                 
                 <Text style={[InsuranceStyles.secondaryText, { textAlign: 'center', marginBottom: 16 }]}>
-                  보험이 성공적으로 생성되었습니다. 이제 실시간으로 모니터링이 시작됩니다.
+                  Your insurance has been successfully created. Real-time monitoring will now begin.
                 </Text>
               </View>
             </Card>
@@ -91,7 +91,7 @@ export default function MonitoringScreen() {
             <Card style={[InsuranceStyles.glassCardWithShadow, { padding: 20, marginBottom: 24 }]}>
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 16 }]}>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600' }]}>
-                  활성 보험
+                  Active Insurance
                 </Text>
                 <View style={{ 
                   backgroundColor: InsuranceColors.status.success + '20',
@@ -111,7 +111,7 @@ export default function MonitoringScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 8 }]}>
                 <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                  보험 ID
+                  Insurance ID
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 12 }]}>
                   #{insuranceData.id}
@@ -120,7 +120,7 @@ export default function MonitoringScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 8 }]}>
                 <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                  월 보험료
+                  Monthly Premium
                 </Text>
                 <Text style={[InsuranceStyles.neonText, { fontSize: 12, fontWeight: '600' }]}>
                   {insuranceData.premium?.toLocaleString()} {insuranceData.currency}
@@ -129,7 +129,7 @@ export default function MonitoringScreen() {
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 8 }]}>
                 <Text style={[InsuranceStyles.mutedText, { fontSize: 12 }]}>
-                  최대 지급액
+                  Maximum Payout
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 12 }]}>
                   {insuranceData.maxPayout?.toLocaleString()} {insuranceData.currency}
@@ -140,33 +140,33 @@ export default function MonitoringScreen() {
             {/* Current Status */}
             <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
               <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-                현재 상태
+                Current Status
               </Text>
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  {insuranceData.indicator} 현재값
+                  {insuranceData.indicator} Current Value
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 14, fontWeight: '600' }]}>
-                  120 μg/m³
+                  120 AQI
                 </Text>
               </View>
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  임계값까지
+                  Until Threshold
                 </Text>
                 <Text style={[InsuranceStyles.status.success, { fontSize: 14, fontWeight: '600' }]}>
-                  80 μg/m³ 여유
+                  30 AQI buffer
                 </Text>
               </View>
               
               <View style={[InsuranceStyles.spaceBetween, { marginBottom: 12 }]}>
                 <Text style={[InsuranceStyles.secondaryText, { fontSize: 14 }]}>
-                  연속 지속 일수
+                  Consecutive Days
                 </Text>
                 <Text style={[InsuranceStyles.primaryText, { fontSize: 14, fontWeight: '600' }]}>
-                  0일 / {insuranceData.period}일
+                  0 days / {insuranceData.period} days
                 </Text>
               </View>
             </Card>
@@ -174,7 +174,7 @@ export default function MonitoringScreen() {
             {/* Recent Activity */}
             <Card style={[InsuranceStyles.glassCard, { padding: 20, marginBottom: 24 }]}>
               <Text style={[InsuranceStyles.primaryText, { fontSize: 16, fontWeight: '600', marginBottom: 16 }]}>
-                최근 활동
+                Recent Activity
               </Text>
               
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
@@ -187,10 +187,10 @@ export default function MonitoringScreen() {
                 }} />
                 <View style={{ flex: 1 }}>
                   <Text style={[InsuranceStyles.secondaryText, { fontSize: 12 }]}>
-                    보험 활성화됨
+                    Insurance Activated
                   </Text>
                   <Text style={[InsuranceStyles.mutedText, { fontSize: 10 }]}>
-                    방금 전
+                    Just now
                   </Text>
                 </View>
               </View>
@@ -205,10 +205,10 @@ export default function MonitoringScreen() {
                 }} />
                 <View style={{ flex: 1 }}>
                   <Text style={[InsuranceStyles.secondaryText, { fontSize: 12 }]}>
-                    데이터 수집 시작
+                    Data Collection Started
                   </Text>
                   <Text style={[InsuranceStyles.mutedText, { fontSize: 10 }]}>
-                    방금 전
+                    Just now
                   </Text>
                 </View>
               </View>
@@ -227,7 +227,7 @@ export default function MonitoringScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <Ionicons name="add" size={20} color={InsuranceColors.background.primary} />
                   <Text style={InsuranceStyles.primaryButtonText}>
-                    새 보험 만들기
+                    Create New Insurance
                   </Text>
                 </View>
               </Pressable>
@@ -240,7 +240,7 @@ export default function MonitoringScreen() {
                 ]}
               >
                 <Text style={InsuranceStyles.ghostButtonText}>
-                  보험 내역 보기
+                  View Insurance History
                 </Text>
               </Pressable>
             </View>

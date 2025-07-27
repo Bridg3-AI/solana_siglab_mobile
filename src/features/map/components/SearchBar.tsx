@@ -165,7 +165,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ mapRef }) => {
         {/* Search header */}
         <View style={styles.searchHeader}>
           <TerminalText style={styles.searchLabel}>
-            >> LOCATION_SCAN.exe
+            {'>>'} LOCATION_SCAN.exe
           </TerminalText>
         </View>
         

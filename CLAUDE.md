@@ -277,3 +277,7 @@ This is a **GPS-based AI agent insurance DApp** for Solana Mobile that provides 
 - **Mobile-first design** - Optimized for Android mobile wallet integration
 
 The current implementation serves as a foundation template with Solana Mobile Wallet Adapter integration, React Navigation, and Material Design components ready for building the GPS-based insurance features.
+
+## Task Master AI Instructions
+**Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
+@./.taskmaster/CLAUDE.md

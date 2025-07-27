@@ -1,6 +1,6 @@
 /**
- * The app navigator (formerly "AppNavigator" and "MainNavigator") is used for the primary
- * navigation flows of your app.
+ * The app navigator - Insurance creation flow with 7 steps
+ * Based on dApp_UI conversion to React Native
  */
 import {
   NavigationContainer,
@@ -13,23 +13,36 @@ import OnboardingScreen from "../screens/OnboardingScreen";
 import { StatusBar } from "expo-status-bar";
 
 /**
- * This type allows TypeScript to know what routes are defined in this navigator
- * as well as what properties (if any) they might take when navigating to them.
- *
- * If no params are allowed, pass through `undefined`.
- *
- * For more information, see this documentation:
- *   https://reactnavigation.org/docs/params/
- *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
- *   https://reactnavigation.org/docs/typescript/#organizing-types
- *
+ * Insurance Data Type - shared across all screens
  */
+export type InsuranceData = {
+  id?: string;
+  description: string;
+  indicator: string;
+  threshold: number;
+  period: number;
+  premium: number;
+  maxPayout: number;
+  reliability: number;
+  currency: 'KRW' | 'USDC';
+  status: 'draft' | 'active' | 'claimed';
+};
 
+/**
+ * Root Stack Parameter List - Insurance creation flow
+ */
 type RootStackParamList = {
   Onboarding: undefined;
   HomeStack: undefined;
   Settings: undefined;
-  // 🔥 Your screens go here
+  // Insurance Creation Flow (7 steps)
+  InsuranceHome: undefined;
+  Chat: { data?: Partial<InsuranceData> };
+  Score: { data: InsuranceData };
+  Indicator: { data: InsuranceData };
+  Premium: { data: InsuranceData };
+  Policy: { data: InsuranceData };
+  Monitoring: { data: InsuranceData };
 };
 
 declare global {
@@ -54,7 +67,63 @@ const AppStack = () => {
         component={HomeNavigator}
         options={{ headerShown: false }}
       />
-      {/** 🔥 Your screens go here */}
+      {/* Insurance Creation Flow */}
+      <Stack.Screen
+        name="InsuranceHome"
+        component={Screens.InsuranceHomeScreen}
+        options={{ 
+          headerShown: false,
+          title: "Seeker 보험" 
+        }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Screens.ChatScreen}
+        options={{ 
+          headerShown: false,
+          title: "아이디어 입력" 
+        }}
+      />
+      <Stack.Screen
+        name="Score"
+        component={Screens.ScoreScreen}
+        options={{ 
+          headerShown: false,
+          title: "가능성 검증" 
+        }}
+      />
+      <Stack.Screen
+        name="Indicator"
+        component={Screens.IndicatorScreen}
+        options={{ 
+          headerShown: false,
+          title: "지표 설정" 
+        }}
+      />
+      <Stack.Screen
+        name="Premium"
+        component={Screens.PremiumScreen}
+        options={{ 
+          headerShown: false,
+          title: "프리미엄 계산" 
+        }}
+      />
+      <Stack.Screen
+        name="Policy"
+        component={Screens.PolicyScreen}
+        options={{ 
+          headerShown: false,
+          title: "정책 미리보기" 
+        }}
+      />
+      <Stack.Screen
+        name="Monitoring"
+        component={Screens.MonitoringScreen}
+        options={{ 
+          headerShown: false,
+          title: "모니터링" 
+        }}
+      />
     </Stack.Navigator>
   );
 };

@@ -107,7 +107,7 @@ export default function IndicatorScreen() {
               <TextInput
                 value={indicator}
                 onChangeText={setIndicator}
-                style={[InsuranceStyles.textInput, { height: 48 }]}
+                style={[InsuranceStyles.textInput, { height: 54 }]}
                 placeholder="e.g. AQI Index"
                 placeholderTextColor={InsuranceColors.text.muted}
               />
@@ -121,7 +121,7 @@ export default function IndicatorScreen() {
               <TextInput
                 value={threshold}
                 onChangeText={setThreshold}
-                style={[InsuranceStyles.textInput, { height: 48 }]}
+                style={[InsuranceStyles.textInput, { height: 54 }]}
                 placeholder="200"
                 placeholderTextColor={InsuranceColors.text.muted}
                 keyboardType="numeric"
@@ -136,7 +136,7 @@ export default function IndicatorScreen() {
               <TextInput
                 value={period}
                 onChangeText={setPeriod}
-                style={[InsuranceStyles.textInput, { height: 48 }]}
+                style={[InsuranceStyles.textInput, { height: 54 }]}
                 placeholder="3"
                 placeholderTextColor={InsuranceColors.text.muted}
                 keyboardType="numeric"

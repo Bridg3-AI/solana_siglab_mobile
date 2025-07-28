@@ -28,6 +28,7 @@ export const InsuranceColors = {
     header: 'rgba(0, 0, 0, 0.3)',
     accent: 'rgba(0, 212, 212, 0.1)',
     strong: 'rgba(255, 255, 255, 0.15)',
+    warning: 'rgba(255, 165, 2, 0.1)',
   },
   
   // Text Colors

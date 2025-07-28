@@ -18,13 +18,14 @@ export type InsuranceData = {
   id?: string;
   description: string;
   indicator: string;
-  threshold: number;
+  threshold: string;
   period: number;
-  premium: number;
-  maxPayout: number;
-  reliability: number;
+  premium?: number;
+  maxPayout?: number;
+  reliability?: number;
   currency: 'USD' | 'USDC';
   status: 'draft' | 'active' | 'claimed';
+  transactionSignature?: string;
 };
 
 /**

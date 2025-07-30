@@ -61,9 +61,9 @@ export function HomeNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: route.name === 'Map' ? false : true,
-        header: route.name !== 'Map' ? () => <TopBar /> : undefined,
-        tabBarStyle: route.name === 'Map' ? { display: 'none' } : {
+        headerShown: route.name === 'Map' || route.name === 'Chat' ? false : true,
+        header: route.name !== 'Map' && route.name !== 'Chat' ? () => <TopBar /> : undefined,
+        tabBarStyle: route.name === 'Map' || route.name === 'Chat' ? { display: 'none' } : {
           backgroundColor: theme.colors.background.surface,
           borderTopColor: theme.colors.border.subtle,
           borderTopWidth: 1,
@@ -96,7 +96,11 @@ export function HomeNavigator() {
       <Tab.Screen 
         name="Chat" 
         component={ChatScreen}
-        options={{ title: "Chat" }}
+        options={{ 
+          title: "Festival AI",
+          headerShown: false,
+          tabBarStyle: { display: 'none' }
+        }}
       />
       <Tab.Screen 
         name="Map" 

@@ -55,7 +55,7 @@ const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
   return (
-    <Stack.Navigator initialRouteName={"InsuranceHome"}>
+    <Stack.Navigator initialRouteName={"HomeStack"}>
       <Stack.Screen
         name="HomeStack"
         component={HomeNavigator}
@@ -75,7 +75,7 @@ const AppStack = () => {
         component={Screens.ChatScreen}
         options={{ 
           headerShown: false,
-          title: "Idea Input" 
+          title: "Festival Insurance AI" 
         }}
       />
       <Stack.Screen

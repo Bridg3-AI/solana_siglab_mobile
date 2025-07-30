@@ -2,7 +2,7 @@
  * Chat Screen - Converted from dApp_UI ChatInput.tsx
  * Insurance idea input with natural language processing
  */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   View, 
   Text,
@@ -13,43 +13,46 @@ import {
   Pressable, 
   TextInput,
   SafeAreaView,
-  ActivityIndicator
+  ActivityIndicator,
+  StyleSheet
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useNavigation, useRoute, NavigationProp, RouteProp } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import { MapView, MapViewRef } from '../features/map/components/MapView';
 
 import { InsuranceStyles, InsuranceColors, GradientConfigs } from '../theme/insurance-styles';
 import type { InsuranceData } from '../navigators/AppNavigator';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-// Example prompts data (from dApp_UI)
+// Festival insurance prompts
 const examplePrompts = [
+  {
+    category: 'Festival',
+    prompts: [
+      'Cover medical expenses if injured at Fuji Rock Festival',
+      'Pay $300 if festival is cancelled due to typhoon',
+      'Cover theft/loss of items at festival grounds'
+    ]
+  },
+  {
+    category: 'Travel',
+    prompts: [
+      'Cover flight cancellation to Japan for festival',
+      'Pay $500 if unable to attend due to illness',
+      'Cover accommodation if festival dates change'
+    ]
+  },
   {
     category: 'Weather',
     prompts: [
-      'Pay $500 if LA AQI ≥ 150 for 3 consecutive days',
-      'Pay $300 if hurricane warning is issued in Florida',
-      'Pay $200 if NYC daily rainfall exceeds 4 inches'
-    ]
-  },
-  {
-    category: 'Finance',
-    prompts: [
-      'Pay $1,000 if Bitcoin drops 15% or more within 24 hours',
-      'Pay $500 if S&P 500 drops -5% or more weekly',
-      'Pay $300 if EUR/USD exchange rate falls below 1.05'
-    ]
-  },
-  {
-    category: 'Sports',
-    prompts: [
-      'Pay $200 if Lakers miss NBA playoffs this season',
-      'Pay $100 if Patrick Mahomes throws less than 25 TDs in NFL season',
-      'Pay $300 if Yankees finish below .500 in MLB season'
+      'Pay $200 per day if heavy rain during festival',
+      'Cover gear damage from rain/mud at festival',
+      'Pay $100 if temperature exceeds 35°C at venue'
     ]
   }
 ];
@@ -65,40 +68,50 @@ type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
 export default function ChatScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<ChatScreenRouteProp>();
+  const mapRef = useRef<MapViewRef>(null);
   
   const initialData = route.params?.data || {};
   const [input, setInput] = useState(initialData.description || '');
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [showMap, setShowMap] = useState(true);
 
   const handleSubmit = async () => {
     if (!input.trim()) {
-      setError('Please enter your insurance idea.');
+      setError('Please describe your festival insurance needs.');
       return;
     }
 
-    if (input.length > 80) {
-      setError('Please enter within 80 characters.');
+    if (input.length > 120) {
+      setError('Please keep your request under 120 characters.');
       return;
     }
 
     setIsProcessing(true);
     setError('');
 
-    // Simulate AI processing (from dApp_UI)
+    // Simulate AI processing for festival insurance
     setTimeout(() => {
       setIsProcessing(false);
       
-      // Navigate to Score screen with data
+      // For demo: show insurance options in map view
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          latitude: 36.8447,
+          longitude: 138.8049,
+        });
+      }
+      
+      // Navigate to Score screen with festival insurance data
       const insuranceData: InsuranceData = {
         description: input,
-        indicator: '',
-        threshold: 0,
-        period: 0,
-        premium: 0,
-        maxPayout: 0,
-        reliability: 0,
+        indicator: 'Festival attendance',
+        threshold: 1,
+        period: 3, // 3 days festival
+        premium: 0.08, // 0.08 SOL
+        maxPayout: 1000,
+        reliability: 95,
         currency: 'USD',
         status: 'draft',
         ...initialData
@@ -121,15 +134,22 @@ export default function ChatScreen() {
     <SafeAreaView style={InsuranceStyles.safeArea}>
       <StatusBar style="light" />
       
-      {/* Background Gradient */}
-      <LinearGradient
-        colors={GradientConfigs.background.colors}
-        start={GradientConfigs.background.start}
-        end={GradientConfigs.background.end}
-        style={InsuranceStyles.container}
-      >
-        {/* Header */}
-        <View style={[InsuranceStyles.glassHeader, styles.header]}>
+      {/* Split View Container */}
+      <View style={newStyles.container}>
+        {/* Map View (Top 60%) */}
+        <View style={newStyles.mapContainer}>
+          <MapView ref={mapRef} />
+        </View>
+        
+        {/* Chat Interface (Bottom 40%) */}
+        <LinearGradient
+          colors={GradientConfigs.background.colors}
+          start={GradientConfigs.background.start}
+          end={GradientConfigs.background.end}
+          style={newStyles.chatContainer}
+        >
+        {/* Compact Header */}
+        <View style={[InsuranceStyles.glassHeader, newStyles.compactHeader]}>
           <View style={[InsuranceStyles.maxWidth, InsuranceStyles.spaceBetween]}>
             <Pressable
               style={({ pressed }) => [
@@ -143,60 +163,39 @@ export default function ChatScreen() {
             </Pressable>
             
             <View style={styles.headerCenter}>
-              <Text style={[InsuranceStyles.gradientText, styles.headerTitle]}>
-                Seeker Insurance
-              </Text>
-              <Text style={[InsuranceStyles.mutedText, styles.headerSubtitle]}>
-                Idea Input
+              <Text style={[InsuranceStyles.gradientText, newStyles.headerTitle]}>
+                Festival Insurance AI
               </Text>
             </View>
             
             <View style={styles.headerSpacer} />
           </View>
           
-          {/* Progress Bar */}
-          <View style={[InsuranceStyles.maxWidth, styles.progressContainer]}>
-            <View style={InsuranceStyles.progressContainer}>
-              <View 
-                style={[
-                  InsuranceStyles.progressFill,
-                  { width: `${(1 / 6) * 100}%` } // Step 2 of 7
-                ]}
-              />
-            </View>
-          </View>
         </View>
 
         <KeyboardAvoidingView 
-          style={styles.keyboardContainer}
+          style={newStyles.keyboardContainer}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <ScrollView 
-            style={InsuranceStyles.container}
-            contentContainerStyle={InsuranceStyles.scrollContainer}
+            style={newStyles.scrollView}
+            contentContainerStyle={newStyles.scrollContent}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
             <View style={[InsuranceStyles.padding, InsuranceStyles.maxWidth]}>
               
-              {/* Instruction Card */}
-              <Card style={[InsuranceStyles.glassCard, InsuranceStyles.accentCard, styles.instructionCard]}>
-                <View style={styles.instructionContent}>
-                  <Ionicons 
-                    name="bulb" 
-                    size={20} 
-                    color={InsuranceColors.primary.teal} 
-                  />
-                  <View style={styles.instructionText}>
-                    <Text style={[InsuranceStyles.primaryText, styles.instructionTitle]}>
-                      Describe your insurance idea in plain language
-                    </Text>
-                    <Text style={[InsuranceStyles.secondaryText, styles.instructionSubtitle]}>
-                      Format like "If condition occurs, pay amount" for better accuracy
-                    </Text>
-                  </View>
-                </View>
-              </Card>
+              {/* Compact Instruction */}
+              <View style={newStyles.instructionBanner}>
+                <MaterialCommunityIcons 
+                  name="shield-plus" 
+                  size={18} 
+                  color={InsuranceColors.primary.teal} 
+                />
+                <Text style={[InsuranceStyles.secondaryText, newStyles.instructionText]}>
+                  Tell me what festival coverage you need
+                </Text>
+              </View>
 
               {/* Input Area */}
               <View style={styles.inputSection}>
@@ -204,17 +203,17 @@ export default function ChatScreen() {
                   <TextInput
                     value={input}
                     onChangeText={setInput}
-                    placeholder="e.g. Pay $500 if LA AQI exceeds 150 for 3 consecutive days"
+                    placeholder="e.g. I need medical coverage for Fuji Rock Festival"
                     placeholderTextColor={InsuranceColors.text.muted}
-                    style={[InsuranceStyles.textInput, styles.textArea]}
+                    style={[InsuranceStyles.textInput, newStyles.compactTextArea]}
                     multiline
-                    maxLength={80}
+                    maxLength={120}
                     textAlignVertical="top"
                   />
                   
                   <View style={styles.inputFooter}>
                     <Text style={[InsuranceStyles.mutedText, styles.charCount]}>
-                      {input.length}/80
+                      {input.length}/120
                     </Text>
                     <Pressable
                       style={styles.micButton}
@@ -270,7 +269,7 @@ export default function ChatScreen() {
                         color={InsuranceColors.background.primary} 
                       />
                       <Text style={InsuranceStyles.primaryButtonText}>
-                        Verify Feasibility
+                        Get Coverage Quote
                       </Text>
                     </View>
                   )}
@@ -326,31 +325,79 @@ export default function ChatScreen() {
                 </View>
               </View>
 
-              {/* Tips Section */}
-              <Card style={[InsuranceStyles.glassCard, styles.tipsCard]}>
-                <Text style={[InsuranceStyles.primaryText, styles.tipsTitle]}>
-                  💡 Writing Tips
-                </Text>
-                <View style={styles.tipsList}>
-                  <Text style={[InsuranceStyles.mutedText, styles.tipItem]}>
-                    • Include specific conditions and values
-                  </Text>
-                  <Text style={[InsuranceStyles.mutedText, styles.tipItem]}>
-                    • Use measurable indicators
-                  </Text>
-                  <Text style={[InsuranceStyles.mutedText, styles.tipItem]}>
-                    • Gambling-related content may be restricted
-                  </Text>
-                </View>
-              </Card>
 
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
+    </View>
     </SafeAreaView>
   );
 }
+
+const newStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: InsuranceColors.background.primary,
+  },
+  
+  mapContainer: {
+    flex: 0.6, // 60% of screen
+    backgroundColor: '#000',
+  },
+  
+  chatContainer: {
+    flex: 0.4, // 40% of screen
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 8,
+  },
+  
+  compactHeader: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: '600' as const,
+  },
+  
+  keyboardContainer: {
+    flex: 1,
+  },
+  
+  scrollView: {
+    flex: 1,
+  },
+  
+  scrollContent: {
+    paddingBottom: 20,
+  },
+  
+  instructionBanner: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: InsuranceColors.glass.background,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  
+  instructionText: {
+    fontSize: 13,
+    flex: 1,
+  },
+  
+  compactTextArea: {
+    minHeight: 60,
+    maxHeight: 80,
+    fontSize: 14,
+    paddingTop: 12,
+  },
+});
 
 const styles = {
   header: {

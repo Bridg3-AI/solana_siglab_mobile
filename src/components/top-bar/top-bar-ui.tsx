@@ -5,8 +5,69 @@ import { useNavigation } from "@react-navigation/native";
 import { ellipsify } from "../../utils/ellipsify";
 import { useState } from "react";
 import * as Clipboard from "expo-clipboard";
-import { Linking } from "react-native";
+import { Linking, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { InsuranceColors, InsuranceStyles } from "../../theme/insurance-styles";
 // import { useCluster } from "../cluster/cluster-data-access"; // Temporarily disabled for iOS compatibility
+
+const styles = StyleSheet.create({
+  walletButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 6,
+    minWidth: 100,
+  },
+  
+  connectedButton: {
+    backgroundColor: InsuranceColors.primary.teal,
+    borderColor: InsuranceColors.primary.teal,
+  },
+  
+  disconnectedButton: {
+    backgroundColor: InsuranceColors.glass.background,
+    borderColor: InsuranceColors.glass.border,
+  },
+  
+  walletButtonText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  
+  connectedText: {
+    color: InsuranceColors.background.primary,
+  },
+  
+  disconnectedText: {
+    color: InsuranceColors.primary.teal,
+  },
+  
+  settingsButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: InsuranceColors.glass.background,
+    borderWidth: 1,
+    borderColor: InsuranceColors.glass.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  menuContent: {
+    backgroundColor: InsuranceColors.glass.background,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: InsuranceColors.glass.border,
+  },
+  
+  menuItemText: {
+    color: InsuranceColors.text.primary,
+    fontSize: 14,
+  },
+});
 
 export function TopBarWalletButton({
   selectedAccount,
